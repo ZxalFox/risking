@@ -1,0 +1,32 @@
+{
+  "Metadata": {
+    "title": "Risking - Project Status",
+    "description": "Track the progress of the Risking digital adaptation and see what's coming next."
+  },
+  "HomePage": {
+    "heading": "Risking: The Game",
+    "descriptionHeading": "Project Description",
+    "descriptionBody": "Risking is a non-digital card game designed to teach risk management in software projects. Players take on the role of project managers, using cards to simulate the emergence of risks (attacks) and the application of solutions to mitigate them (defenses). Each round is a challenge of strategy and knowledge, where players must identify the best way to handle the problems that arise.",
+    "statusHeading": "Current Status",
+    "statusTag": "In Development",
+    "statusBody": "The project is currently in the initial phase of digital adaptation. We have analyzed the original paper that proposed the game and are now structuring the foundational elements for the software version.",
+    "nextStepsHeading": "Next Steps",
+    "nextStepsIntro": "Our immediate focus is on the following tasks:",
+    "nextStepsItems": {
+      "architecture": "Plan the software architecture to be used.",
+      "design": "Develop the design system and the user interface (UI/UX) concepts.",
+      "prototype": "Create a playable prototype with the core game mechanics.",
+      "stack": "Define the technology stack for development."
+    },
+    "artifactsHeading": "Generated Artifacts",
+    "artifactsItems": {
+      "designSystem": "Design System (FIGMA)"
+    },
+    "footer": "Risking - Digital Version Project"
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "en": "English",
+    "pt-BR": "Portuguese (Brazil)"
+  }
+}
