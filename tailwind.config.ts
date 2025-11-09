@@ -11,7 +11,14 @@ const config: Config = {
       heading: ["var(--font-fredoka)", "sans-serif"],
       body: ["var(--font-inter)", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      colors: {
+        "brand-dark": "#2D3250",
+        "brand-medium": "#424769",
+        "brand-light": "#676F9D",
+        "brand-highlight": "#F9B17A",
+      },
+    },
   },
   plugins: [],
 };

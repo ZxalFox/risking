@@ -1,0 +1,32 @@
+{
+  "Metadata": {
+    "title": "Risking - Status do Projeto",
+    "description": "Acompanhe o progresso da adaptação digital do Risking e saiba quais são os próximos passos."
+  },
+  "HomePage": {
+    "heading": "Risking: The Game",
+    "descriptionHeading": "Descrição do Projeto",
+    "descriptionBody": "Risking é um jogo de cartas não digital criado para ensinar gestão de riscos em projetos de software. Os jogadores assumem o papel de gerentes de projeto, usando cartas para simular o surgimento de riscos (ataques) e a aplicação de soluções para mitigá-los (defesas). Cada rodada é um desafio de estratégia e conhecimento, em que é preciso identificar a melhor forma de lidar com os problemas que surgem.",
+    "statusHeading": "Status Atual",
+    "statusTag": "Em desenvolvimento",
+    "statusBody": "O projeto está na fase inicial de adaptação digital. Já analisamos o artigo original que apresentou o jogo e agora estamos estruturando os elementos fundamentais para a versão em software.",
+    "nextStepsHeading": "Próximos Passos",
+    "nextStepsIntro": "Estamos focados nas seguintes tarefas:",
+    "nextStepsItems": {
+      "architecture": "Planejar a arquitetura de software que será utilizada.",
+      "design": "Desenvolver o design system e os conceitos de interface (UI/UX).",
+      "prototype": "Criar um protótipo jogável com as mecânicas principais do jogo.",
+      "stack": "Definir o stack de tecnologias para o desenvolvimento."
+    },
+    "artifactsHeading": "Artefatos Gerados",
+    "artifactsItems": {
+      "designSystem": "Design System (FIGMA)"
+    },
+    "footer": "Risking - Projeto da Versão Digital"
+  },
+  "LocaleSwitcher": {
+    "label": "Idioma",
+    "en": "Inglês",
+    "pt-BR": "Português (Brasil)"
+  }
+}
