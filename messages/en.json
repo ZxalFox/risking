@@ -28,5 +28,85 @@
     "label": "Language",
     "en": "English",
     "pt-BR": "Portuguese (Brazil)"
+  },
+  "PlaygroundMetadata": {
+    "title": "Risking - Backend Playground",
+    "description": "Interact with the backend endpoints directly from the browser to validate the API quickly."
+  },
+  "PlaygroundPage": {
+    "heading": "Backend playground",
+    "intro": "Use the tools below to trigger backend endpoints and inspect the responses without leaving the browser.",
+    "baseUrlLabel": "API base URL",
+    "helpers": {
+      "generateEmailLabel": "Need a throwaway email?",
+      "generateEmail": "Generate test email"
+    },
+    "authSection": {
+      "heading": "Authentication",
+      "description": "Create test users or reuse existing accounts to manage tokens.",
+      "registerHeading": "Register",
+      "loginHeading": "Login",
+      "refreshHeading": "Refresh tokens"
+    },
+    "sessionsSection": {
+      "heading": "Sessions",
+      "description": "Create lobbies and run through the current session workflow.",
+      "createHeading": "Create session",
+      "joinHeading": "Join session",
+      "startHeading": "Start session",
+      "startHint": "Requires you to be the host and have at least three players in the lobby.",
+      "stateHeading": "Fetch session state",
+      "leaveHeading": "Leave session"
+    },
+    "activeSessions": {
+      "heading": "Active sessions",
+      "empty": "No lobby sessions listed yet.",
+      "players": "{count, plural, one {# player} other {# players}}",
+      "use": "Use ID"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "displayName": "Display name",
+      "locale": "Locale",
+      "maxPlayers": "Max players",
+      "roundCount": "Round count",
+      "sessionId": "Session ID"
+    },
+    "actions": {
+      "register": "Register & get tokens",
+      "login": "Sign in",
+      "refresh": "Refresh tokens",
+      "listActive": "List active sessions",
+      "create": "Create session",
+      "join": "Join session",
+      "start": "Start session",
+      "state": "Fetch current state",
+      "leave": "Leave session"
+    },
+    "status": {
+      "loading": "Running {action}...",
+      "success": "Success",
+      "error": "Failed"
+    },
+    "tokens": {
+      "heading": "Tokens",
+      "description": "Tokens live only in memory. Paste, edit, or clear them as you need."
+    },
+    "refreshTokenLabel": "Refresh token",
+    "accessTokenLabel": "Access token",
+    "clearTokens": "Clear tokens",
+    "latestResult": {
+      "heading": "Latest response",
+      "subheading": "Every request result appears here.",
+      "empty": "Trigger any request to inspect the payload."
+    },
+    "errors": {
+      "missingBaseUrl": "Provide the API base URL before calling endpoints.",
+      "missingAccessToken": "Set an access token first (register or login).",
+      "missingRefreshToken": "Set a refresh token before refreshing.",
+      "missingSessionId": "Fill in a session ID to continue.",
+      "unexpected": "Unexpected error, check the console."
+    }
   }
 }
