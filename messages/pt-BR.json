@@ -28,5 +28,85 @@
     "label": "Idioma",
     "en": "Inglês",
     "pt-BR": "Português (Brasil)"
+  },
+  "PlaygroundMetadata": {
+    "title": "Risking - Playground do Backend",
+    "description": "Interaja com os endpoints do backend diretamente no navegador para validar a API rapidamente."
+  },
+  "PlaygroundPage": {
+    "heading": "Playground do backend",
+    "intro": "Use as ferramentas abaixo para acionar os endpoints do backend e inspecionar as respostas sem sair do navegador.",
+    "baseUrlLabel": "URL base da API",
+    "helpers": {
+      "generateEmailLabel": "Precisa de um e-mail descartável?",
+      "generateEmail": "Gerar e-mail de teste"
+    },
+    "authSection": {
+      "heading": "Autenticação",
+      "description": "Crie usuários de teste ou reaproveite contas existentes para gerenciar tokens.",
+      "registerHeading": "Registrar",
+      "loginHeading": "Entrar",
+      "refreshHeading": "Atualizar tokens"
+    },
+    "sessionsSection": {
+      "heading": "Sessões",
+      "description": "Crie lobbies e percorra o fluxo atual de sessões.",
+      "createHeading": "Criar sessão",
+      "joinHeading": "Entrar na sessão",
+      "startHeading": "Iniciar sessão",
+      "startHint": "É necessário ser host e ter pelo menos três jogadores no lobby.",
+      "stateHeading": "Buscar estado da sessão",
+      "leaveHeading": "Sair da sessão"
+    },
+    "activeSessions": {
+      "heading": "Sessões ativas",
+      "empty": "Ainda não há sessões em lobby listadas.",
+      "players": "{count, plural, one {# jogador} other {# jogadores}}",
+      "use": "Usar ID"
+    },
+    "fields": {
+      "email": "E-mail",
+      "password": "Senha",
+      "displayName": "Nome de exibição",
+      "locale": "Localidade",
+      "maxPlayers": "Máximo de jogadores",
+      "roundCount": "Quantidade de rodadas",
+      "sessionId": "ID da sessão"
+    },
+    "actions": {
+      "register": "Registrar e obter tokens",
+      "login": "Entrar",
+      "refresh": "Atualizar tokens",
+      "listActive": "Listar sessões ativas",
+      "create": "Criar sessão",
+      "join": "Entrar na sessão",
+      "start": "Iniciar sessão",
+      "state": "Buscar estado atual",
+      "leave": "Sair da sessão"
+    },
+    "status": {
+      "loading": "Executando {action}...",
+      "success": "Sucesso",
+      "error": "Falhou"
+    },
+    "tokens": {
+      "heading": "Tokens",
+      "description": "Os tokens ficam apenas em memória. Cole, edite ou limpe sempre que precisar."
+    },
+    "refreshTokenLabel": "Token de atualização",
+    "accessTokenLabel": "Token de acesso",
+    "clearTokens": "Limpar tokens",
+    "latestResult": {
+      "heading": "Última resposta",
+      "subheading": "O resultado de cada requisição aparece aqui.",
+      "empty": "Dispare qualquer requisição para inspecionar o payload."
+    },
+    "errors": {
+      "missingBaseUrl": "Informe a URL base da API antes de chamar os endpoints.",
+      "missingAccessToken": "Defina um token de acesso primeiro (registre-se ou faça login).",
+      "missingRefreshToken": "Defina um token de atualização antes de atualizar.",
+      "missingSessionId": "Preencha um ID de sessão para continuar.",
+      "unexpected": "Erro inesperado, verifique o console."
+    }
   }
 }

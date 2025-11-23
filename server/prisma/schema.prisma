@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+enum SessionStatus {
+  lobby
+  in_progress
+  completed
+  abandoned
+}
+
+enum CardType {
+  risk
+  mitigation
+}
+
+enum TurnOutcome {
+  attack_success
+  defense_with_card
+  defense_with_knowledge
+}
+
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique @db.Citext
+  passwordHash   String           @map("password_hash")
+  displayName    String           @map("display_name")
+  locale         String?          @map("locale")
+  refreshTokenHash String?        @map("refresh_token_hash")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  hostedSessions Session[]        @relation("SessionHost")
+  sessionPlayers SessionPlayer[]
+}
+
+model Session {
+  id             String            @id @default(uuid())
+  hostId         String            @map("host_id")
+  host           User              @relation("SessionHost", fields: [hostId], references: [id])
+  status         SessionStatus     @default(lobby)
+  maxPlayers     Int               @map("max_players")
+  roundCount     Int               @default(4) @map("round_count")
+  currentRound   Int?              @map("current_round")
+  currentTurnId  String?           @unique @map("current_turn_id")
+  currentTurn    SessionPlayer?    @relation("SessionCurrentTurn", fields: [currentTurnId], references: [id])
+  startedAt      DateTime?         @map("started_at")
+  endedAt        DateTime?         @map("ended_at")
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+  players        SessionPlayer[]
+  deck           SessionDeck?
+  turns          Turn[]
+  events         SessionEvent[]
+
+  @@index([status])
+}
+
+model SessionPlayer {
+  id                 String          @id @default(uuid())
+  sessionId          String          @map("session_id")
+  userId             String?         @map("user_id")
+  session            Session         @relation(fields: [sessionId], references: [id])
+  user               User?           @relation(fields: [userId], references: [id])
+  joinOrder          Int             @map("join_order")
+  moneyBalance       Int             @default(30) @map("money_balance")
+  isAi               Boolean         @default(false) @map("is_ai")
+  connected          Boolean         @default(false)
+  eliminatedAt       DateTime?       @map("eliminated_at")
+  createdAt          DateTime        @default(now()) @map("created_at")
+  updatedAt          DateTime        @updatedAt @map("updated_at")
+  turnsAsAttacker    Turn[]          @relation("TurnAttacker")
+  turnsAsDefender    Turn[]          @relation("TurnDefender")
+  currentTurnSession Session?        @relation("SessionCurrentTurn")
+
+  @@unique([sessionId, userId])
+  @@index([sessionId])
+}
+
+model Card {
+  id          String      @id @default(uuid())
+  type        CardType
+  category    String
+  title       String
+  description String
+  mitigations Json?       
+  rawLocale   String?     @map("raw_locale")
+  sourceRef   String?     @map("source_ref")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  riskTurns   Turn[]      @relation("TurnRiskCard")
+  mitigationTurns Turn[]  @relation("TurnMitigationCard")
+}
+
+model SessionDeck {
+  id              String   @id @default(uuid())
+  sessionId       String   @unique @map("session_id")
+  session         Session  @relation(fields: [sessionId], references: [id])
+  riskOrder       String[] @map("risk_order") @db.Uuid
+  mitigationOrder String[] @map("mitigation_order") @db.Uuid
+  drawPointers    Json     @map("draw_pointers")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+}
+
+model Turn {
+  id               String        @id @default(uuid())
+  sessionId        String        @map("session_id")
+  session          Session       @relation(fields: [sessionId], references: [id])
+  attackerId       String        @map("attacker_id")
+  attacker         SessionPlayer @relation("TurnAttacker", fields: [attackerId], references: [id])
+  defenderId       String        @map("defender_id")
+  defender         SessionPlayer @relation("TurnDefender", fields: [defenderId], references: [id])
+  riskCardId       String        @map("risk_card_id")
+  riskCard         Card          @relation("TurnRiskCard", fields: [riskCardId], references: [id])
+  mitigationCardId String?       @map("mitigation_card_id")
+  mitigationCard   Card?         @relation("TurnMitigationCard", fields: [mitigationCardId], references: [id])
+  mitigationText   String?       @map("mitigation_text")
+  outcome          TurnOutcome
+  deltaMoney       Json          @map("delta_money")
+  createdAt        DateTime      @default(now()) @map("created_at")
+}
+
+model SessionEvent {
+  id        BigInt   @id @default(autoincrement())
+  sessionId String   @map("session_id")
+  session   Session  @relation(fields: [sessionId], references: [id])
+  type      String
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+}
