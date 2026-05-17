@@ -8,6 +8,7 @@ Este documento tem como objetivo:
  - Auxiliar os Agentes e I.A's integradas a realizarem alterações assertivas
 
 ## 1. Definição do Jogo Risking!
+
 Risking! é um jogo de baralho baseado em uma dinâmica de ataque (o surgimento de riscos em projetos de desenvolvimento de software) e defesa (o uso de mitigações adequadas para estes riscos) para abordar os imprevistos que podem ocorrer em um projeto de desenvolvimento de software.
 
 O objetivo do jogo é ensinar aos jogadores conceitos de gerenciamento de riscos, apresentar as categorias de riscos, riscos existentes dentro destas categorias e as mitigações que podem ser usadas para diminuir o impacto negativo dos riscos nos projetos. Com isso, o jogo permite fazer o relacionamento existente entre categorias de riscos e riscos, assim como riscos e mitigações.
@@ -95,3 +96,6 @@ Quando um jogador é atacado, é possível se defender de duas formas:
 
 Se foi feito um ataque com sucesso, ou seja, o jogador que foi atacado não conseguiu se defender, esse deverá pagar 5 unidades de dinheiro para o jogador que o atacou. Se foi feita uma
 defesa adequada, em outras palavras um ataque sem sucesso, então o atacante deverá pagar 5 unidades de dinheiro para o jogador que fez a defesa da forma correta.
+
+Todas as cartas usadas nas ações são descartadas para o deck da mesa e, no começo de cada rodada, todos os participantes recebem uma carta de risco. Essa dinâmica é repetida durante as 4 rodadas e
+ganha o jogador que no final das rodadas possuir mais unidades de dinheiro. Além disso, caso um jogador perca todo seu dinheiro, ele poderá ficar fora do jogo.
