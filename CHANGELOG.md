@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.0.1
+
+### Changed
+
+- Updated Next.js version to 16.1.4
+- Updated AGENTS.md file
+
 ## 1.0.0
 
 ### Added
