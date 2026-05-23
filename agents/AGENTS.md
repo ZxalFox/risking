@@ -7,6 +7,11 @@ Este documento tem como objetivo:
  - Definir natureza da aplicação
  - Auxiliar os Agentes e I.A's integradas a realizarem alterações assertivas
 
+Este documento é um complemento a outros documentos que definem a aplicação, para uma visão geral do projeto, ele está integrado aos outros documentos:
+ - PLAN.md - Plano e crononograma de etapas do projeto
+ - RULES.md - Define as regras do projeto, processos e padrões de codificação
+ - DESIGN.md - Define os padrões de design do projeto.
+
 ## 1. Definição do Jogo Risking!
 
 Risking! é um jogo de baralho baseado em uma dinâmica de ataque (o surgimento de riscos em projetos de desenvolvimento de software) e defesa (o uso de mitigações adequadas para estes riscos) para abordar os imprevistos que podem ocorrer em um projeto de desenvolvimento de software.
@@ -99,3 +104,86 @@ defesa adequada, em outras palavras um ataque sem sucesso, então o atacante dev
 
 Todas as cartas usadas nas ações são descartadas para o deck da mesa e, no começo de cada rodada, todos os participantes recebem uma carta de risco. Essa dinâmica é repetida durante as 4 rodadas e
 ganha o jogador que no final das rodadas possuir mais unidades de dinheiro. Além disso, caso um jogador perca todo seu dinheiro, ele poderá ficar fora do jogo.
+
+## 3. Arquitetura do projeto
+
+### Frontend
+
+O frontend é constituido por uma aplicação web desenvolvida com:
+- Next.js
+- TypeScript
+- TailwindCSS
+- NextIntl
+
+### Backend 
+
+O backend é constituido por uma API REST desenvolvida com:
+- NEST.JS
+- TypeORM
+- WebSocket (Socket.io)
+
+
+### Banco de Dados 
+
+O banco de dados é constituido por um banco de dados relacional desenvolvido com:
+- PostgreSQL
+
+### Infraestrutura
+
+A estrutura do projeto será monolítica, com o frontend e backend em um mesmo repositório, a integração e conexão das partes (front, back e banco) será organizada dentro de um docker-compose.
+
+## 4. Diretrizes
+
+### Diretrizes
+
+A aplicação tem como principal objetivo ser um material educatico, os pilares e diretrizes que deve influenciar nas tomadas de decisão arquiteturais e de implementação são:
+
+ - Simplicidade: A aplicação deve ser intuitiva e fácil de se utilizar, em poucos passos deve ser possível entrar em uma sala e participar do jogo
+
+ - Acessibilidade: A aplicação será disponibilizada publicamente portanto é importante que ela seja acessível à diferentes públicos, o design deve ser inclusivo para pessoas que possam deficiências comuns como:
+    - Daltonismo
+    - Deficiência Visual
+    - Deficiência Auditiva
+
+ - Aprendizado: A aplicação será uma ferramenta educativa então é interessante que ela seja didática e facilite a dinâmica de aprendizado. Portanto é recomendado que sejam implementadas funcionalidades que facilitem o aprendizado do usuário, como tutoriais, dicas, explicações sobre os riscos e mitigações, etc.
+
+## 5. Funcionamento da aplicação.
+
+O dinâmica da aplicação seguirá o seguinte fluxo:
+
+1. O usuário acessa a página incial, e poderá escolher entre duas opções
+
+    1.1 Criar uma nova sala
+
+        - Um nova sessão de jogo é criada e o usuário recebe um código identificador da sessão para compartilhar com seus colegas
+
+    1.2 Entrar em uma sala existente
+
+        - É solicitado ao usuário que ele informe o código da sessão ao qual deseja entrar
+        - Devem ser realizadas validações de limite de quantidade de jogadores na sessão e se ela permite a entrada de novos jogadores
+
+2. Ao entrar em uma sessão:
+
+    2.1 O jogador criador dela terá a autoridade de decidir quando inciar a partida, afim de que possa esperar outros jogadores entrarem na sessão.
+    
+    2.2 Ao iniciar a partida não será permitida a entrada de novos jogadores  
+    
+    2.3 Ao finalizar a partida o vencedor deverá ser informado ao grupo
+    
+    2.4 Ao final o jogador criador poderá escolher entre iniciar uma nova partida na mesma sala ou sair
+    
+    2.5 Se o jogador criador decidir sair, todos os outros jogadores serão removidos da sala e e a sala e sessão serão encerradas
+    
+    2.6 Se o jogador criador decidir iniciar uma nova partida o jogo será reiniciado na mesma sala com os mesmos jogadores.
+    
+    2.7 Ao sair da aplicação qualquer jogador será removido da sala e se for o criador da sala a sessão será encerrada.
+    
+3. O jogo deverá possuir uma página de configurações, contendo as principais configurações de acessibilidade
+    
+4. O jogo deverá possuir uma página de tutorial, explicando as regras e dinâmicas do jogo
+
+
+
+
+
+
