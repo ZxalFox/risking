@@ -5,6 +5,8 @@ import type { ReactNode } from "react";
 import { Inter, Fredoka } from "next/font/google";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { routing } from "@/i18n/routing";
+import "../globals.css";
+import { GameProvider } from "@/context/GameContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,10 +46,12 @@ export default async function LocaleLayout({ children, params }: Props) {
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <div className="flex min-h-dvh flex-col">
-            <header className="flex bg-amber-500 justify-end px-6 py-4">
-              <LocaleSwitcher />
-            </header>
-            <div className="flex-1">{children}</div>
+            <GameProvider>
+              <header className="flex bg-amber-500 justify-end px-6 py-4">
+                <LocaleSwitcher />
+              </header>
+              <div className="flex-1">{children}</div>
+            </GameProvider>
           </div>
         </NextIntlClientProvider>
       </body>
