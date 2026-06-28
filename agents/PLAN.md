@@ -65,6 +65,18 @@ O banco de dados deve suportar armazenar dados de sessões online e de seus joga
 
 O banco de dados não deverá se preocupar com estruturas de autenticação, os acessos serão simplificados para que qualquer jogador consiga utilizar sem dificuldade e com passo simplificados de identificação, informando apenas um nickname por exemplo
 
+### 2. Configuração e implementação do Backend
+
+Adicione todas as configurações necessárias ao backend para que a aplicação possa funcionar da maneira mais eficiente possível, utilizando poucos recursos e técnicas simples de implementação que entreguem as funcionalidades essenciais
+
+### 3. Configuração e implementação do Frontend
+
+Configure o frontend com as bibliotecas e recursos necessários, se atente as regras de design e visual consistente, utilize o que for preciso para trazer responsividade e acessibilidade, a interface deve rodar de forma fluida em diferentes dispositivos
+
+### 4. Pipeline de verificação e Build
+
+Utilize de scripts de automação para possibilitar etapas de pós-implementação, como verificação de integridade do projeto, consistencia de padrões de código, build, lint dentre outros.
+
 
 
 
