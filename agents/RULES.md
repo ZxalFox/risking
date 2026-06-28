@@ -61,3 +61,6 @@ A estilização deverá se feita utilizando as diretivas de design em DESIGN.md
 ### 1.8 Regras de branches e commits
 
 - Preferir branches curtas e focadas por funcionalidade
+
+
+

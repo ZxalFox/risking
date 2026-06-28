@@ -69,3 +69,14 @@ A biblioteca unlighthouse deve ser utilizada para avaliar as métricas da aplica
 - Layout deve funcionar bem em telas pequenas e grandes
 - Priorizar botões e áreas clicáveis confortáveis no mobile
 - Evitar tabelas extensas em telas pequenas sem adaptação
+
+#### Cartas
+
+No diretório assets do frontend à alguns exemplares de designs desenvolvidos para as cartas do jogo, para cada item há um arquivo .svg e um .png são eles:
+
+    - mitigation-card-front: Exemplo da frente carta de mitigação (mesma para todas)
+    - mitigation-card-verse: Exemplo do verso da carta de mitigação (diferente para todas, carta de mitigação contém uma combinação de no máximo 5 mitigações relacionadas ao seu tipo)
+    - risk-card-front: Exemplo da frente de uma carta de risco ( o topo da carta é o mesmo para frente e verso, mas na frente temos um ícone que identifica o tipo, no verso temos as mitigações relacionadas)
+    - risk-card-verse: possui no máximo 3 mitigações relacionadas
+    - money: representação do dinheiro no jogo, o design é bem semelhante, alterando apenas as cores e o número no centro
+    - risk-cards: exemplos de outras cartas de risco (não possui todas mas podem servir como referencia para as demais, é uma sugestão para o design)
