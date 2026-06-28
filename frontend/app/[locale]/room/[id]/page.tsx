@@ -2,15 +2,15 @@
 
 import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useGameSocket } from "../../../../src/hooks/useGameSocket";
+import { useRouter } from "@/i18n/routing";
+import { useGame } from "../../../../src/context/GameContext";
 import { Card } from "../../../../src/components/Card";
 
 export default function RoomPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const t = useTranslations("Game");
   const router = useRouter();
-  const { room, socketId, startGame, attack, defend, error } = useGameSocket();
+  const { room, socketId, startGame, attack, defend, error } = useGame();
 
   const [selectedRisk, setSelectedRisk] = useState<string | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);

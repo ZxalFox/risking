@@ -33,9 +33,9 @@ export class GameGateway implements OnGatewayDisconnect {
         isCreator: true
       });
 
-      return { event: 'roomCreated', data: room };
+      client.emit('roomCreated', { event: 'roomCreated', data: room });
     } catch (e: any) {
-      return { event: 'error', data: e.message };
+      client.emit('roomCreated', { event: 'error', data: e.message });
     }
   }
 
@@ -51,9 +51,9 @@ export class GameGateway implements OnGatewayDisconnect {
       
       // Notify others in room
       this.server.to(data.roomId).emit('roomUpdated', room);
-      return { event: 'roomJoined', data: room };
+      client.emit('roomJoined', { event: 'roomJoined', data: room });
     } catch (e: any) {
-      return { event: 'error', data: e.message };
+      client.emit('roomJoined', { event: 'error', data: e.message });
     }
   }
 
@@ -62,9 +62,8 @@ export class GameGateway implements OnGatewayDisconnect {
     try {
       const room = this.gameService.startGame(data.roomId);
       this.server.to(data.roomId).emit('gameStarted', room);
-      return { event: 'success' };
     } catch (e: any) {
-      return { event: 'error', data: e.message };
+      client.emit('error', { data: e.message });
     }
   }
 
@@ -76,9 +75,8 @@ export class GameGateway implements OnGatewayDisconnect {
     try {
       const room = this.gameService.attack(data.roomId, client.id, data.targetId, data.riskCardId);
       this.server.to(data.roomId).emit('attacked', room);
-      return { event: 'success' };
     } catch (e: any) {
-      return { event: 'error', data: e.message };
+      client.emit('error', { data: e.message });
     }
   }
 
@@ -90,9 +88,8 @@ export class GameGateway implements OnGatewayDisconnect {
     try {
       const room = this.gameService.defend(data.roomId, client.id, data.success, data.mitigationCardId);
       this.server.to(data.roomId).emit('defenseResult', room);
-      return { event: 'success' };
     } catch (e: any) {
-      return { event: 'error', data: e.message };
+      client.emit('error', { data: e.message });
     }
   }
 }

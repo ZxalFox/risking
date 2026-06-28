@@ -1,59 +1,46 @@
-# Risking: The Game
+# Risking! - O Jogo (Versão Digital)
 
-![Project Status](https://img.shields.io/badge/status-in%20development-e67e22)
+Risking é um jogo de baralho educativo focado em ensinar conceitos de gerenciamento de riscos em projetos de software, agora adaptado para uma plataforma digital multijogador em tempo real.
 
-A **mobile-first** digital adaptation of the card game "Risking". The game is designed to teach the fundamentals of **Software Project Risk Management** in an interactive and engaging way.
+O projeto foi reestruturado para uma arquitetura Monorepo, separando a aplicação em **Frontend** (Next.js) e **Backend** (NestJS).
 
-This project is based on the original academic paper: _Risking: A Game for Teaching Risk Management in Software Projects_ (SBQS 2019).
+## Como Inicializar o Projeto Localmente
 
----
+Siga o passo a passo abaixo para instalar as dependências e rodar ambos os serviços (frontend e backend) simultaneamente.
 
-## 💻 Tech Stack
+### 1. Pré-requisitos
+Certifique-se de ter o **Node.js** (v18+) e o gerenciador de pacotes **Yarn** instalados em sua máquina.
 
-This project is built using a modern, type-safe stack:
+### 2. Instalação das Dependências
 
-- **Framework:** [Next.js](https://nextjs.org/) (with App Router)
-- **Language:** [TypeScript](https://www.typescriptlang.org/)
-- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-
----
-
-## 🎨 Design System
-
-All style guides, color palettes, typography, and component prototypes are being developed in Figma. This serves as the single source of truth for the game's UI/UX.
-
-➡️ **[Access the Figma Project here](https://www.figma.com/design/ygawE00FCv1V6EVPB07XWx/risking?node-id=0-1&t=Pz7NEPyBNpfMBnW2-1)**
-
----
-
-## 🚀 Getting Started
-
-Follow these instructions to get a local copy up and running for development.
-
-### 1. Clone the repository
+Acesse a raiz do projeto e execute o comando abaixo. Ele instalará o `concurrently` na raiz e rodará a instalação dentro das pastas `frontend` e `backend` automaticamente:
 
 ```bash
-# Clone this repository (replace with your URL)
-git clone [https://github.com/ZxalFox/risking](https://github.com/ZxalFox/risking)
-
-# Navigate into the project directory
-cd risking-game
+yarn install:all
 ```
 
-### 2. Install dependencies
+*(Alternativamente, você pode rodar `yarn install` separadamente nas pastas `/frontend` e `/backend`)*.
 
-This project uses yarn as the package manager.
+### 3. Rodando o Projeto
 
-```bash
-yarn  install
-```
-
-### 3. Run the development server
-
-Execute the following command to start the app in development mode:
+Para inicializar tanto o servidor frontend (Next.js) quanto o servidor backend (NestJS com WebSockets) ao mesmo tempo, execute na raiz do projeto:
 
 ```bash
 yarn dev
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+- O **Frontend** estará disponível em: [http://localhost:3000](http://localhost:3000)
+- O **Backend** estará rodando em: `http://localhost:3001`
+
+Acesse o endereço do frontend no seu navegador e divirta-se criando salas e convidando amigos para jogar!
+
+## Comandos Extras
+
+Caso deseje rodar os projetos de forma independente:
+
+- **Frontend:** `cd frontend && yarn dev`
+- **Backend:** `cd backend && yarn start:dev`
+
+## Documentação
+
+Mais informações sobre as especificações do jogo, o design, o plano e as diretrizes dos agentes podem ser encontradas na pasta `/agents`.

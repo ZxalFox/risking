@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useGameSocket } from "../hooks/useGameSocket";
-import { useRouter } from "next/navigation";
+import { useGame } from "../context/GameContext";
+import { useRouter } from "@/i18n/routing";
 
 export function Lobby() {
   const t = useTranslations("Game");
-  const { createRoom, joinRoom, room, error } = useGameSocket();
+  const { createRoom, joinRoom, room, error, isConnected } = useGame();
   const router = useRouter();
 
   const [nickname, setNickname] = useState("");
@@ -21,6 +21,12 @@ export function Lobby() {
 
   return (
     <div className="flex flex-col items-center gap-6 py-10">
+      {!isConnected && (
+        <div className="bg-amber-100 border-l-4 border-amber-500 text-amber-700 p-4 rounded-md w-full max-w-sm mb-4">
+          <p className="font-bold">Aviso</p>
+          <p>O servidor não está conectado. Certifique-se de iniciar o backend.</p>
+        </div>
+      )}
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-md border-t-4 border-orange-500">
         <h2 className="mb-4 text-2xl font-bold text-neutral-800 text-center">{t("createRoom")}</h2>
         <div className="flex flex-col gap-3">
