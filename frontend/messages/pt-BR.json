@@ -28,5 +28,29 @@
     "label": "Idioma",
     "en": "Inglês",
     "pt-BR": "Português (Brasil)"
+  },
+  "Game": {
+    "createRoom": "Criar Sala",
+    "joinRoom": "Entrar em Sala",
+    "nickname": "Seu Apelido",
+    "roomId": "Código da Sala",
+    "enter": "Entrar",
+    "waiting": "Aguardando jogadores...",
+    "startGame": "Iniciar Partida",
+    "players": "Jogadores",
+    "money": "Dinheiro",
+    "attack": "Atacar",
+    "defend": "Defender",
+    "yourTurn": "Sua Vez!",
+    "waitingTurn": "Aguardando o turno de:",
+    "riskCards": "Cartas de Risco",
+    "mitigationCards": "Cartas de Mitigação",
+    "youAreAttacked": "Você está sendo atacado por",
+    "defendQuestion": "Como você vai se defender?",
+    "autoDefend": "Usar Carta de Mitigação",
+    "explainDefend": "Explicar Mitigação (Voto)",
+    "noCards": "Nenhuma carta",
+    "round": "Rodada",
+    "winner": "Vencedor"
   }
 }

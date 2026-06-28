@@ -28,5 +28,29 @@
     "label": "Language",
     "en": "English",
     "pt-BR": "Portuguese (Brazil)"
+  },
+  "Game": {
+    "createRoom": "Create Room",
+    "joinRoom": "Join Room",
+    "nickname": "Your Nickname",
+    "roomId": "Room Code",
+    "enter": "Enter",
+    "waiting": "Waiting for players...",
+    "startGame": "Start Game",
+    "players": "Players",
+    "money": "Money",
+    "attack": "Attack",
+    "defend": "Defend",
+    "yourTurn": "Your Turn!",
+    "waitingTurn": "Waiting for turn of:",
+    "riskCards": "Risk Cards",
+    "mitigationCards": "Mitigation Cards",
+    "youAreAttacked": "You are being attacked by",
+    "defendQuestion": "How will you defend?",
+    "autoDefend": "Use Mitigation Card",
+    "explainDefend": "Explain Mitigation (Vote)",
+    "noCards": "No cards",
+    "round": "Round",
+    "winner": "Winner"
   }
 }
