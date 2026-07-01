@@ -9,52 +9,54 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameService = void 0;
 const common_1 = require("@nestjs/common");
 let GameService = class GameService {
-    rooms = new Map();
-    MOCK_MITIGATIONS = [
-        { id: 'm1', description: 'Ter um representante da equipe no local do cliente.' },
-        { id: 'm2', description: 'Envolva a equipe de testes no projeto desde o início.' },
-        { id: 'm3', description: 'Realizar workshops de levantamento com stakeholders.' },
-        { id: 'm4', description: 'Estimativa detalhada de custo e cronograma.' }
-    ];
-    MOCK_RISK_CARDS = [
-        {
-            id: 'r1',
-            category: '1. Tarefa',
-            description: 'Indisponibilidade de documentos de requisitos para testes',
-            mitigations: [this.MOCK_MITIGATIONS[0], this.MOCK_MITIGATIONS[1]]
-        },
-        {
-            id: 'r2',
-            category: '1. Tarefa',
-            description: 'Requisitos ambíguos ou conflitantes',
-            mitigations: [this.MOCK_MITIGATIONS[2]]
-        },
-        {
-            id: 'r3',
-            category: '2. Estrutura',
-            description: 'Horários e cronogramas irreais',
-            mitigations: [this.MOCK_MITIGATIONS[3]]
-        },
-        {
-            id: 'r4',
-            category: '3. Ator',
-            description: 'Alta rotatividade na equipe',
-            mitigations: [{ id: 'm5', description: 'Plano de retenção e reconhecimento' }]
-        },
-        {
-            id: 'r5',
-            category: '4. Tecnologia',
-            description: 'Ferramentas de build instáveis',
-            mitigations: [{ id: 'm6', description: 'Automatizar pipelines' }]
-        }
-    ];
-    MOCK_MITIGATION_CARDS = [
-        { id: 'mc1', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[0], this.MOCK_MITIGATIONS[1], this.MOCK_MITIGATIONS[2]] },
-        { id: 'mc2', category: '2. Estrutura', mitigations: [this.MOCK_MITIGATIONS[3]] },
-        { id: 'mc3', category: '3. Ator', mitigations: [{ id: 'm5', description: 'Plano de retenção e reconhecimento' }] },
-        { id: 'mc4', category: '4. Tecnologia', mitigations: [{ id: 'm6', description: 'Automatizar pipelines' }] },
-        { id: 'mc5', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[2]] }
-    ];
+    constructor() {
+        this.rooms = new Map();
+        this.MOCK_MITIGATIONS = [
+            { id: 'm1', description: 'Ter um representante da equipe no local do cliente.' },
+            { id: 'm2', description: 'Envolva a equipe de testes no projeto desde o início.' },
+            { id: 'm3', description: 'Realizar workshops de levantamento com stakeholders.' },
+            { id: 'm4', description: 'Estimativa detalhada de custo e cronograma.' }
+        ];
+        this.MOCK_RISK_CARDS = [
+            {
+                id: 'r1',
+                category: '1. Tarefa',
+                description: 'Indisponibilidade de documentos de requisitos para testes',
+                mitigations: [this.MOCK_MITIGATIONS[0], this.MOCK_MITIGATIONS[1]]
+            },
+            {
+                id: 'r2',
+                category: '1. Tarefa',
+                description: 'Requisitos ambíguos ou conflitantes',
+                mitigations: [this.MOCK_MITIGATIONS[2]]
+            },
+            {
+                id: 'r3',
+                category: '2. Estrutura',
+                description: 'Horários e cronogramas irreais',
+                mitigations: [this.MOCK_MITIGATIONS[3]]
+            },
+            {
+                id: 'r4',
+                category: '3. Ator',
+                description: 'Alta rotatividade na equipe',
+                mitigations: [{ id: 'm5', description: 'Plano de retenção e reconhecimento' }]
+            },
+            {
+                id: 'r5',
+                category: '4. Tecnologia',
+                description: 'Ferramentas de build instáveis',
+                mitigations: [{ id: 'm6', description: 'Automatizar pipelines' }]
+            }
+        ];
+        this.MOCK_MITIGATION_CARDS = [
+            { id: 'mc1', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[0], this.MOCK_MITIGATIONS[1], this.MOCK_MITIGATIONS[2]] },
+            { id: 'mc2', category: '2. Estrutura', mitigations: [this.MOCK_MITIGATIONS[3]] },
+            { id: 'mc3', category: '3. Ator', mitigations: [{ id: 'm5', description: 'Plano de retenção e reconhecimento' }] },
+            { id: 'mc4', category: '4. Tecnologia', mitigations: [{ id: 'm6', description: 'Automatizar pipelines' }] },
+            { id: 'mc5', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[2]] }
+        ];
+    }
     createRoom() {
         const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
         this.rooms.set(roomId, {

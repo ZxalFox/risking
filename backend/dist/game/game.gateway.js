@@ -17,8 +17,6 @@ const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
 const game_service_1 = require("./game.service");
 let GameGateway = class GameGateway {
-    gameService;
-    server;
     constructor(gameService) {
         this.gameService = gameService;
     }
