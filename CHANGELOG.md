@@ -10,14 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.1.0
 
 ### Added
-- Reestruturação em monorepo separando Frontend (Next.js) e Backend (NestJS).
-- Criação do Game Engine via WebSockets (Socket.io) para comunicação em tempo real.
-- Integração do PostgreSQL via TypeORM no backend.
-- Automação via Docker Compose e criação dos scripts `risk-setup.sh` e `risk-start.sh`.
-- Configuração de build Standalone no Next.js para otimização de imagem Docker.
+- Monorepo restructure separating Frontend (Next.js) and Backend (NestJS).
+- Game Engine over WebSockets (Socket.io) for real-time communication.
+- PostgreSQL integration via TypeORM in the backend.
+- Docker Compose automation and creation of `risk-setup.sh` and `risk-start.sh` helper scripts.
+- Next.js Standalone build configuration for Docker image optimization.
 
 ### Fixed
-- Correção de roteamento do `next-intl` na raiz `/` (middleware redirect).
+- Fixed `next-intl` routing redirect issue at the root path `/` (middleware configuration).
 
 ## 1.0.1
 
