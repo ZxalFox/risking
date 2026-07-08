@@ -5,12 +5,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameService = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const typeorm_2 = require("typeorm");
+const room_entity_1 = require("../database/entities/room.entity");
+const player_entity_1 = require("../database/entities/player.entity");
 let GameService = class GameService {
-    constructor() {
-        this.rooms = new Map();
+    constructor(roomRepo, playerRepo) {
+        this.roomRepo = roomRepo;
+        this.playerRepo = playerRepo;
         this.MOCK_MITIGATIONS = [
             { id: 'm1', description: 'Ter um representante da equipe no local do cliente.' },
             { id: 'm2', description: 'Envolva a equipe de testes no projeto desde o início.' },
@@ -57,53 +68,55 @@ let GameService = class GameService {
             { id: 'mc5', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[2]] }
         ];
     }
-    createRoom() {
+    async createRoom() {
         const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-        this.rooms.set(roomId, {
+        const room = this.roomRepo.create({
             id: roomId,
-            players: [],
             status: 'waiting',
             currentRound: 0,
             currentPlayerIndex: 0
         });
+        await this.roomRepo.save(room);
         return roomId;
     }
-    getRoom(roomId) {
-        return this.rooms.get(roomId);
+    async getRoom(roomId) {
+        return this.roomRepo.findOne({ where: { id: roomId } });
     }
-    joinRoom(roomId, player) {
-        const room = this.rooms.get(roomId);
+    async joinRoom(roomId, player) {
+        const room = await this.roomRepo.findOne({ where: { id: roomId } });
         if (!room)
             throw new Error('Sala não encontrada');
         if (room.status !== 'waiting')
             throw new Error('Jogo já começou');
         if (room.players.length >= 5)
             throw new Error('Sala cheia');
-        const existing = room.players.find(p => p.nickname === player.nickname);
+        let existing = await this.playerRepo.findOne({ where: { room: { id: roomId }, nickname: player.nickname } });
         if (existing) {
             existing.id = player.id;
+            await this.playerRepo.save(existing);
         }
         else {
-            room.players.push({
-                ...player,
+            const newPlayer = this.playerRepo.create({
+                id: player.id,
+                nickname: player.nickname,
                 money: 0,
                 riskCards: [],
-                mitigationCards: []
+                mitigationCards: [],
+                room
             });
+            await this.playerRepo.save(newPlayer);
         }
-        return room;
+        return (await this.roomRepo.findOne({ where: { id: roomId } }));
     }
-    leaveRoom(roomId, playerId) {
-        const room = this.rooms.get(roomId);
-        if (room) {
-            room.players = room.players.filter(p => p.id !== playerId);
-            if (room.players.length === 0) {
-                this.rooms.delete(roomId);
-            }
+    async leaveRoom(roomId, playerId) {
+        await this.playerRepo.delete({ id: playerId });
+        const room = await this.roomRepo.findOne({ where: { id: roomId } });
+        if (room && room.players.length === 0) {
+            await this.roomRepo.delete(roomId);
         }
     }
-    startGame(roomId) {
-        const room = this.rooms.get(roomId);
+    async startGame(roomId) {
+        const room = await this.roomRepo.findOne({ where: { id: roomId } });
         if (!room)
             throw new Error('Sala não encontrada');
         if (room.players.length < 2)
@@ -111,34 +124,38 @@ let GameService = class GameService {
         room.status = 'playing';
         room.currentRound = 1;
         room.currentPlayerIndex = 0;
-        room.players.forEach(p => {
+        for (const p of room.players) {
             p.money = 30;
             p.riskCards = this.getRandomCards(this.MOCK_RISK_CARDS, 3);
             p.mitigationCards = this.getRandomCards(this.MOCK_MITIGATION_CARDS, 2);
-        });
-        return room;
+            await this.playerRepo.save(p);
+        }
+        await this.roomRepo.save(room);
+        return (await this.roomRepo.findOne({ where: { id: roomId } }));
     }
-    attack(roomId, attackerId, targetId, riskCardId) {
-        const room = this.rooms.get(roomId);
+    async attack(roomId, attackerId, targetId, riskCardId) {
+        const room = await this.roomRepo.findOne({ where: { id: roomId } });
         if (!room)
             throw new Error('Sala não encontrada');
         if (room.status !== 'playing')
             throw new Error('Jogo não está em andamento');
         const attacker = room.players.find(p => p.id === attackerId);
-        const riskCardIndex = attacker?.riskCards.findIndex(c => c.id === riskCardId);
+        const riskCardIndex = attacker?.riskCards.findIndex((c) => c.id === riskCardId);
         if (!attacker || riskCardIndex === undefined || riskCardIndex === -1) {
             throw new Error('Carta ou atacante inválido');
         }
         const riskCard = attacker.riskCards.splice(riskCardIndex, 1)[0];
+        await this.playerRepo.save(attacker);
         room.currentAttack = {
             attackerId,
             targetId,
             riskCard
         };
-        return room;
+        await this.roomRepo.save(room);
+        return (await this.roomRepo.findOne({ where: { id: roomId } }));
     }
-    defend(roomId, targetId, success, mitigationCardId) {
-        const room = this.rooms.get(roomId);
+    async defend(roomId, targetId, success, mitigationCardId) {
+        const room = await this.roomRepo.findOne({ where: { id: roomId } });
         if (!room || !room.currentAttack || room.currentAttack.targetId !== targetId) {
             throw new Error('Nenhum ataque contra este jogador');
         }
@@ -147,7 +164,7 @@ let GameService = class GameService {
         if (!target || !attacker)
             throw new Error('Jogadores inválidos');
         if (mitigationCardId) {
-            const mcIndex = target.mitigationCards.findIndex(c => c.id === mitigationCardId);
+            const mcIndex = target.mitigationCards.findIndex((c) => c.id === mitigationCardId);
             if (mcIndex !== -1) {
                 const mc = target.mitigationCards[mcIndex];
                 if (mc.category === room.currentAttack.riskCard.category) {
@@ -167,7 +184,7 @@ let GameService = class GameService {
             target.money -= 5;
             attacker.money += 5;
         }
-        delete room.currentAttack;
+        room.currentAttack = null;
         room.currentPlayerIndex = (room.currentPlayerIndex + 1) % room.players.length;
         if (room.currentPlayerIndex === 0) {
             room.currentRound++;
@@ -175,12 +192,14 @@ let GameService = class GameService {
                 room.status = 'finished';
             }
             else {
-                room.players.forEach(p => {
+                for (const p of room.players) {
                     p.riskCards.push(...this.getRandomCards(this.MOCK_RISK_CARDS, 1));
-                });
+                }
             }
         }
-        return room;
+        await this.playerRepo.save([target, attacker, ...room.players.filter(p => p.id !== target.id && p.id !== attacker.id)]);
+        await this.roomRepo.save(room);
+        return (await this.roomRepo.findOne({ where: { id: roomId } }));
     }
     getRandomCards(deck, amount) {
         const shuffled = [...deck].sort(() => 0.5 - Math.random());
@@ -189,6 +208,10 @@ let GameService = class GameService {
 };
 exports.GameService = GameService;
 exports.GameService = GameService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(room_entity_1.RoomEntity)),
+    __param(1, (0, typeorm_1.InjectRepository)(player_entity_1.PlayerEntity)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], GameService);
 //# sourceMappingURL=game.service.js.map

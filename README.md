@@ -6,24 +6,22 @@ O projeto foi reestruturado para uma arquitetura Monorepo, separando a aplicaç�
 
 ## Como Inicializar o Projeto Localmente
 
-Siga o passo a passo abaixo para instalar as dependências e rodar ambos os serviços (frontend e backend) simultaneamente.
+O projeto agora conta com uma infraestrutura Dockerizada e persiste dados via PostgreSQL.
 
 ### 1. Pré-requisitos
-Certifique-se de ter o **Node.js** (v18+) e o gerenciador de pacotes **Yarn** instalados em sua máquina.
+Certifique-se de ter o **Docker Desktop** (ou Docker Engine + Compose v2), **Node.js** (v18+) e **Yarn** instalados em sua máquina.
 
-### 2. Instalação das Dependências
+### 2. Configuração Inicial do Ambiente
 
-Acesse a raiz do projeto e execute o comando abaixo. Ele instalará o `concurrently` na raiz e rodará a instalação dentro das pastas `frontend` e `backend` automaticamente:
+Para baixar todas as dependências do monorepo e subir apenas o banco de dados em plano de fundo, utilize nosso script de setup:
 
 ```bash
-yarn install:all
+./scripts/risk-setup.sh
 ```
 
-*(Alternativamente, você pode rodar `yarn install` separadamente nas pastas `/frontend` e `/backend`)*.
+### 3. Rodando o Projeto para Desenvolvimento
 
-### 3. Rodando o Projeto
-
-Para inicializar tanto o servidor frontend (Next.js) quanto o servidor backend (NestJS com WebSockets) ao mesmo tempo, execute na raiz do projeto:
+Para rodar o ambiente de desenvolvimento local (Next.js e NestJS em modo *watch*), com o banco de dados do Docker ativo em background, basta usar:
 
 ```bash
 yarn dev
@@ -32,14 +30,13 @@ yarn dev
 - O **Frontend** estará disponível em: [http://localhost:3000](http://localhost:3000)
 - O **Backend** estará rodando em: `http://localhost:3001`
 
-Acesse o endereço do frontend no seu navegador e divirta-se criando salas e convidando amigos para jogar!
+### Alternativa: Rodando a Aplicação Inteira via Docker
 
-## Comandos Extras
+Caso você queira rodar os containers completos (Frontend e Backend emulando o ambiente de produção), utilize:
 
-Caso deseje rodar os projetos de forma independente:
-
-- **Frontend:** `cd frontend && yarn dev`
-- **Backend:** `cd backend && yarn start:dev`
+```bash
+./scripts/risk-start.sh
+```
 
 ## Documentação
 

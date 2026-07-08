@@ -9,7 +9,7 @@
   "scripts": {
     "dev:frontend": "cd frontend && yarn dev",
     "dev:backend": "cd backend && yarn start:dev",
-    "dev": "concurrently \"yarn dev:frontend\" \"yarn dev:backend\"",
+    "dev": "docker compose up -d db && concurrently \"yarn dev:frontend\" \"yarn dev:backend\"",
     "install:all": "yarn install && cd frontend && yarn install && cd ../backend && yarn install"
   },
   "devDependencies": {

@@ -8,22 +8,22 @@ export declare class GameGateway implements OnGatewayDisconnect {
     handleDisconnect(client: Socket): void;
     handleCreateRoom(client: Socket, data: {
         nickname: string;
-    }): void;
+    }): Promise<void>;
     handleJoinRoom(client: Socket, data: {
         roomId: string;
         nickname: string;
-    }): void;
+    }): Promise<void>;
     handleStartGame(client: Socket, data: {
         roomId: string;
-    }): void;
+    }): Promise<void>;
     handleAttack(client: Socket, data: {
         roomId: string;
         targetId: string;
         riskCardId: string;
-    }): void;
+    }): Promise<void>;
     handleDefend(client: Socket, data: {
         roomId: string;
         success: boolean;
         mitigationCardId?: string;
-    }): void;
+    }): Promise<void>;
 }

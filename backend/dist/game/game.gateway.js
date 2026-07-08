@@ -22,11 +22,11 @@ let GameGateway = class GameGateway {
     }
     handleDisconnect(client) {
     }
-    handleCreateRoom(client, data) {
+    async handleCreateRoom(client, data) {
         try {
-            const roomId = this.gameService.createRoom();
+            const roomId = await this.gameService.createRoom();
             client.join(roomId);
-            const room = this.gameService.joinRoom(roomId, {
+            const room = await this.gameService.joinRoom(roomId, {
                 id: client.id,
                 nickname: data.nickname,
                 isCreator: true
@@ -37,9 +37,9 @@ let GameGateway = class GameGateway {
             client.emit('roomCreated', { event: 'error', data: e.message });
         }
     }
-    handleJoinRoom(client, data) {
+    async handleJoinRoom(client, data) {
         try {
-            const room = this.gameService.joinRoom(data.roomId, {
+            const room = await this.gameService.joinRoom(data.roomId, {
                 id: client.id,
                 nickname: data.nickname,
                 isCreator: false
@@ -52,27 +52,27 @@ let GameGateway = class GameGateway {
             client.emit('roomJoined', { event: 'error', data: e.message });
         }
     }
-    handleStartGame(client, data) {
+    async handleStartGame(client, data) {
         try {
-            const room = this.gameService.startGame(data.roomId);
+            const room = await this.gameService.startGame(data.roomId);
             this.server.to(data.roomId).emit('gameStarted', room);
         }
         catch (e) {
             client.emit('error', { data: e.message });
         }
     }
-    handleAttack(client, data) {
+    async handleAttack(client, data) {
         try {
-            const room = this.gameService.attack(data.roomId, client.id, data.targetId, data.riskCardId);
+            const room = await this.gameService.attack(data.roomId, client.id, data.targetId, data.riskCardId);
             this.server.to(data.roomId).emit('attacked', room);
         }
         catch (e) {
             client.emit('error', { data: e.message });
         }
     }
-    handleDefend(client, data) {
+    async handleDefend(client, data) {
         try {
-            const room = this.gameService.defend(data.roomId, client.id, data.success, data.mitigationCardId);
+            const room = await this.gameService.defend(data.roomId, client.id, data.success, data.mitigationCardId);
             this.server.to(data.roomId).emit('defenseResult', room);
         }
         catch (e) {
@@ -91,7 +91,7 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleCreateRoom", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('joinRoom'),
@@ -99,7 +99,7 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleJoinRoom", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('startGame'),
@@ -107,7 +107,7 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleStartGame", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('attack'),
@@ -115,7 +115,7 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleAttack", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('defend'),
@@ -123,7 +123,7 @@ __decorate([
     __param(1, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleDefend", null);
 exports.GameGateway = GameGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: { origin: '*' } }),

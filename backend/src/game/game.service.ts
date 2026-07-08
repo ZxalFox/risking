@@ -1,9 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { RoomEntity } from '../database/entities/room.entity';
+import { PlayerEntity } from '../database/entities/player.entity';
 import { Player, Room, RiskCard, MitigationCard, Mitigation } from './game.types';
 
 @Injectable()
 export class GameService {
-  private rooms: Map<string, Room> = new Map();
+  constructor(
+    @InjectRepository(RoomEntity)
+    private readonly roomRepo: Repository<RoomEntity>,
+    @InjectRepository(PlayerEntity)
+    private readonly playerRepo: Repository<PlayerEntity>,
+  ) {}
 
   // Mock data for MVP
   private readonly MOCK_MITIGATIONS: Mitigation[] = [
@@ -54,86 +63,89 @@ export class GameService {
     { id: 'mc5', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[2]] }
   ];
 
-  createRoom(): string {
+  async createRoom(): Promise<string> {
     const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
-    this.rooms.set(roomId, {
+    const room = this.roomRepo.create({
       id: roomId,
-      players: [],
       status: 'waiting',
       currentRound: 0,
       currentPlayerIndex: 0
     });
+    await this.roomRepo.save(room);
     return roomId;
   }
 
-  getRoom(roomId: string): Room | undefined {
-    return this.rooms.get(roomId);
+  async getRoom(roomId: string): Promise<RoomEntity | null> {
+    return this.roomRepo.findOne({ where: { id: roomId } });
   }
 
-  joinRoom(roomId: string, player: Omit<Player, 'money' | 'riskCards' | 'mitigationCards'>): Room {
-    const room = this.rooms.get(roomId);
+  async joinRoom(roomId: string, player: Omit<Player, 'money' | 'riskCards' | 'mitigationCards'>): Promise<RoomEntity> {
+    const room = await this.roomRepo.findOne({ where: { id: roomId } });
     if (!room) throw new Error('Sala não encontrada');
     if (room.status !== 'waiting') throw new Error('Jogo já começou');
     if (room.players.length >= 5) throw new Error('Sala cheia');
     
-    // Check if player already exists, if so update socket, else push
-    const existing = room.players.find(p => p.nickname === player.nickname);
+    let existing = await this.playerRepo.findOne({ where: { room: { id: roomId }, nickname: player.nickname } });
     if (existing) {
       existing.id = player.id; // update socket id
+      await this.playerRepo.save(existing);
     } else {
-      room.players.push({
-        ...player,
+      const newPlayer = this.playerRepo.create({
+        id: player.id,
+        nickname: player.nickname,
         money: 0,
         riskCards: [],
-        mitigationCards: []
+        mitigationCards: [],
+        room
       });
+      await this.playerRepo.save(newPlayer);
     }
 
-    return room;
+    return (await this.roomRepo.findOne({ where: { id: roomId } })) as RoomEntity;
   }
 
-  leaveRoom(roomId: string, playerId: string): void {
-    const room = this.rooms.get(roomId);
-    if (room) {
-      room.players = room.players.filter(p => p.id !== playerId);
-      if (room.players.length === 0) {
-        this.rooms.delete(roomId);
-      }
+  async leaveRoom(roomId: string, playerId: string): Promise<void> {
+    await this.playerRepo.delete({ id: playerId });
+    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    if (room && room.players.length === 0) {
+      await this.roomRepo.delete(roomId);
     }
   }
 
-  startGame(roomId: string): Room {
-    const room = this.rooms.get(roomId);
+  async startGame(roomId: string): Promise<RoomEntity> {
+    const room = await this.roomRepo.findOne({ where: { id: roomId } });
     if (!room) throw new Error('Sala não encontrada');
     if (room.players.length < 2) throw new Error('Mínimo 2 jogadores');
 
     room.status = 'playing';
     room.currentRound = 1;
-    room.currentPlayerIndex = 0; // The MVP could randomize, but we will pick the first (creator) for simplicity
+    room.currentPlayerIndex = 0;
 
-    // Deal cards and money
-    room.players.forEach(p => {
-      p.money = 30; // 4 notes of 5, 1 note of 10. Just an integer for MVP.
+    for (const p of room.players) {
+      p.money = 30;
       p.riskCards = this.getRandomCards(this.MOCK_RISK_CARDS, 3);
       p.mitigationCards = this.getRandomCards(this.MOCK_MITIGATION_CARDS, 2);
-    });
+      await this.playerRepo.save(p);
+    }
 
-    return room;
+    await this.roomRepo.save(room);
+    return (await this.roomRepo.findOne({ where: { id: roomId } })) as RoomEntity;
   }
 
-  attack(roomId: string, attackerId: string, targetId: string, riskCardId: string): Room {
-    const room = this.rooms.get(roomId);
+  async attack(roomId: string, attackerId: string, targetId: string, riskCardId: string): Promise<RoomEntity> {
+    const room = await this.roomRepo.findOne({ where: { id: roomId } });
     if (!room) throw new Error('Sala não encontrada');
     if (room.status !== 'playing') throw new Error('Jogo não está em andamento');
 
     const attacker = room.players.find(p => p.id === attackerId);
-    const riskCardIndex = attacker?.riskCards.findIndex(c => c.id === riskCardId);
+    const riskCardIndex = attacker?.riskCards.findIndex((c: any) => c.id === riskCardId);
     
     if (!attacker || riskCardIndex === undefined || riskCardIndex === -1) {
        throw new Error('Carta ou atacante inválido');
     }
 
     const riskCard = attacker.riskCards.splice(riskCardIndex, 1)[0];
+    await this.playerRepo.save(attacker);
     
     room.currentAttack = {
       attackerId,
@@ -141,68 +153,62 @@ export class GameService {
       riskCard
     };
 
-    return room;
+    await this.roomRepo.save(room);
+    return (await this.roomRepo.findOne({ where: { id: roomId } })) as RoomEntity;
   }
 
-  defend(roomId: string, targetId: string, success: boolean, mitigationCardId?: string): Room {
-    const room = this.rooms.get(roomId);
+  async defend(roomId: string, targetId: string, success: boolean, mitigationCardId?: string): Promise<RoomEntity> {
+    const room = await this.roomRepo.findOne({ where: { id: roomId } });
     if (!room || !room.currentAttack || room.currentAttack.targetId !== targetId) {
       throw new Error('Nenhum ataque contra este jogador');
     }
 
     const target = room.players.find(p => p.id === targetId);
-    const attacker = room.players.find(p => p.id === room.currentAttack!.attackerId);
+    const attacker = room.players.find(p => p.id === room.currentAttack.attackerId);
 
     if (!target || !attacker) throw new Error('Jogadores inválidos');
 
     if (mitigationCardId) {
-      // Automatic defense by discarding a mitigation card of same category
-      const mcIndex = target.mitigationCards.findIndex(c => c.id === mitigationCardId);
+      const mcIndex = target.mitigationCards.findIndex((c: any) => c.id === mitigationCardId);
       if (mcIndex !== -1) {
         const mc = target.mitigationCards[mcIndex];
         if (mc.category === room.currentAttack.riskCard.category) {
           target.mitigationCards.splice(mcIndex, 1);
           success = true;
         } else {
-          success = false; // Invalid category used
+          success = false;
         }
       }
     }
 
     if (success) {
-      // Attack failed (good defense) -> Attacker pays 5 to defender
       attacker.money -= 5;
       target.money += 5;
     } else {
-      // Attack successful -> Defender pays 5 to attacker
       target.money -= 5;
       attacker.money += 5;
     }
 
-    delete room.currentAttack;
-
-    // Next player turn
+    room.currentAttack = null;
     room.currentPlayerIndex = (room.currentPlayerIndex + 1) % room.players.length;
 
-    // If a full circle happened, deal a new card to everyone? 
-    // Spec says "no começo de cada rodada, todos recebem 1 carta de risco".
-    // For MVP, if currentPlayerIndex goes back to 0, increment round.
     if (room.currentPlayerIndex === 0) {
       room.currentRound++;
       if (room.currentRound > 4) {
         room.status = 'finished';
       } else {
-        room.players.forEach(p => {
+        for (const p of room.players) {
           p.riskCards.push(...this.getRandomCards(this.MOCK_RISK_CARDS, 1));
-        });
+        }
       }
     }
 
-    return room;
+    await this.playerRepo.save([target, attacker, ...room.players.filter(p => p.id !== target.id && p.id !== attacker.id)]);
+    await this.roomRepo.save(room);
+    return (await this.roomRepo.findOne({ where: { id: roomId } })) as RoomEntity;
   }
 
   private getRandomCards<T>(deck: T[], amount: number): T[] {
-    // Very simple randomizer for MVP
     const shuffled = [...deck].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, amount);
   }

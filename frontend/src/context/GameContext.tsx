@@ -26,7 +26,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!socket) {
-      socket = io("http://localhost:3001");
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:3001";
+      socket = io(backendUrl);
     }
 
     setIsConnected(socket.connected);
