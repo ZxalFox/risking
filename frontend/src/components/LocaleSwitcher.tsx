@@ -30,11 +30,11 @@ export default function LocaleSwitcher() {
   }
 
   return (
-    <label className="inline-flex items-center gap-2 text-sm font-body text-neutral-600">
-      <span className="font-semibold text-neutral-700">{t("label")}</span>
+    <label className="inline-flex items-center gap-2 text-xs md:text-sm font-body text-neutral-400">
+      <span className="font-semibold hidden sm:inline">{t("label")}</span>
       <span className="relative inline-flex items-center">
         <select
-          className="rounded-full border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-800 shadow-sm transition hover:border-neutral-400 focus:border-brand-highlight focus:outline-none focus:ring-2 focus:ring-brand-highlight/40 disabled:opacity-70"
+          className="rounded-lg border border-neutral-700 bg-neutral-800/80 backdrop-blur-sm px-3 py-2 sm:px-2 sm:py-1 text-sm sm:text-xs font-medium text-neutral-300 shadow-sm transition hover:border-neutral-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/50 disabled:opacity-70 cursor-pointer"
           value={locale}
           onChange={handleChange}
           disabled={isPending}

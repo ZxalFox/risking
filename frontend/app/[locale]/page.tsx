@@ -1,111 +1,128 @@
-import { use } from "react";
+"use client";
+
+import { use, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-
-const FIGMA_URL =
-  "https://www.figma.com/design/ygawE00FCv1V6EVPB07XWx/risking?node-id=0-1&t=Pz7NEPyBNpfMBnW2-1";
-
-const NEXT_STEPS_KEYS = [
-  "architecture",
-  "design",
-  "prototype",
-  "stack",
-] as const;
-
-const ARTIFACT_KEYS = ["designSystem"] as const;
+import { useRouter } from "@/i18n/routing";
+import { useGame } from "@/context/GameContext";
 
 type PageParams = Promise<{ locale: string }>;
 
-type Props = {
-  params: PageParams;
-};
-
-export async function generateMetadata({ params }: { params: PageParams }) {
-  const { locale } = await params;
-  const t = await getTranslations({
-    locale,
-    namespace: "Metadata",
-  });
-
-  return {
-    title: t("title"),
-    description: t("description"),
-  };
-}
-
-export default function HomePage({ params }: Props) {
+export default function HomePage({ params }: { params: PageParams }) {
   const { locale } = use(params);
-
-  setRequestLocale(locale);
-
   const t = useTranslations("HomePage");
+  const router = useRouter();
+  
+  const { createRoom, joinRoom, room, error, isConnected } = useGame();
+
+  const [nickname, setNickname] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  // Redireciona para a sala assim que ela for criada ou acessada no contexto
+  useEffect(() => {
+    if (room && room.id) {
+      router.push(`/room/${room.id}`);
+    }
+  }, [room, router]);
+
+  const handleCreateRoom = () => {
+    setLocalError(null);
+    if (!nickname.trim()) {
+      setLocalError(t("errorNicknameRequired"));
+      return;
+    }
+    createRoom(nickname.trim());
+  };
+
+  const handleJoinRoom = () => {
+    setLocalError(null);
+    if (!nickname.trim()) {
+      setLocalError(t("errorNicknameRequired"));
+      return;
+    }
+    if (!roomId.trim()) {
+      setLocalError(t("errorRoomIdRequired"));
+      return;
+    }
+    joinRoom(roomId.trim(), nickname.trim());
+  };
 
   return (
-    <main className="bg-neutral-100 text-neutral-800">
-      <div className="mx-auto max-w-3xl px-5 py-10 sm:py-16">
-        <div className="rounded-2xl bg-white p-6 shadow-md sm:p-10">
-          <header className="border-b border-neutral-200 pb-6">
-            <h1 className="font-heading text-3xl text-neutral-900 sm:text-4xl">
-              {t("heading")}
-            </h1>
-          </header>
+    <main className="min-h-screen bg-neutral-900 flex items-center justify-center p-6 font-body text-white">
+      <div className="max-w-md w-full bg-neutral-800 rounded-2xl shadow-2xl p-8 border border-neutral-700">
+        
+        <header className="text-center mb-10">
+          <h1 className="text-6xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-red-600 drop-shadow-lg mb-2 pb-2">
+            {t("heading")}
+          </h1>
+          <p className="text-neutral-400">
+            {t("subheading")}
+          </p>
+        </header>
 
-          <div className="space-y-10 pt-6 font-body text-base leading-relaxed sm:text-lg">
-            <section id="description" className="space-y-4">
-              <h2 className="border-b border-neutral-200 pb-2 font-heading text-2xl text-neutral-900">
-                {t("descriptionHeading")}
-              </h2>
-              <p>{t("descriptionBody")}</p>
-            </section>
+        <div className="space-y-6">
+          
+          {(localError || error) && (
+            <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg text-sm font-medium text-center" role="alert">
+              {localError || error}
+            </div>
+          )}
 
-            <section id="status" className="space-y-4">
-              <div className="flex flex-wrap items-center gap-4">
-                <h2 className="border-b border-neutral-200 pb-2 font-heading text-2xl text-neutral-900">
-                  {t("statusHeading")}
-                </h2>
-                <span className="rounded-full bg-amber-500 px-4 py-1 text-sm font-semibold uppercase tracking-wide text-white">
-                  {t("statusTag")}
-                </span>
-              </div>
-              <p>{t("statusBody")}</p>
-            </section>
+          {!isConnected && !error && (
+            <div className="bg-amber-500/10 border border-amber-500 text-amber-400 p-3 rounded-lg text-sm font-medium text-center" role="alert">
+              Conectando ao servidor...
+            </div>
+          )}
 
-            <section id="next-steps" className="space-y-4">
-              <h2 className="border-b border-neutral-200 pb-2 font-heading text-2xl text-neutral-900">
-                {t("nextStepsHeading")}
-              </h2>
-              <p>{t("nextStepsIntro")}</p>
-              <ul className="list-disc space-y-2 pl-6">
-                {NEXT_STEPS_KEYS.map((key) => (
-                  <li key={key}>{t(`nextStepsItems.${key}`)}</li>
-                ))}
-              </ul>
-            </section>
-
-            <section id="artifacts" className="space-y-4">
-              <h2 className="border-b border-neutral-200 pb-2 font-heading text-2xl text-neutral-900">
-                {t("artifactsHeading")}
-              </h2>
-              <ul className="list-disc space-y-2 pl-6">
-                {ARTIFACT_KEYS.map((key) => (
-                  <li key={key}>
-                    <a
-                      href={FIGMA_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-amber-600 underline transition hover:text-amber-700"
-                    >
-                      {t(`artifactsItems.${key}`)}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
+          <div className="space-y-2">
+            <label htmlFor="nickname" className="text-sm font-semibold text-neutral-300 block">
+              Nickname
+            </label>
+            <input
+              id="nickname"
+              type="text"
+              placeholder={t("nicknamePlaceholder")}
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              className="w-full bg-neutral-900 border border-neutral-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-risk-primary focus:border-transparent transition-all"
+              autoComplete="off"
+            />
           </div>
 
-          <footer className="mt-10 border-t border-neutral-200 pt-6 text-center text-sm text-neutral-500">
-            {t("footer")}
-          </footer>
+          <div className="pt-4 border-t border-neutral-700 space-y-4">
+            <button
+              onClick={handleCreateRoom}
+              disabled={!isConnected}
+              className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
+            >
+              {t("createRoom")}
+            </button>
+            
+            <div className="flex items-center gap-3 py-2">
+              <div className="flex-1 h-px bg-neutral-700"></div>
+              <span className="text-xs font-bold text-neutral-500">{t("or")}</span>
+              <div className="flex-1 h-px bg-neutral-700"></div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <input
+                id="roomId"
+                type="text"
+                placeholder={t("roomIdPlaceholder")}
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value.toLowerCase())}
+                className="w-full bg-neutral-900 border border-neutral-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-mono"
+                autoComplete="off"
+              />
+              <button
+                onClick={handleJoinRoom}
+                disabled={!isConnected || !roomId.trim()}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              >
+                {t("joinRoom")}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </main>

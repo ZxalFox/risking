@@ -13,10 +13,14 @@ const config: Config = {
     },
     extend: {
       colors: {
-        "brand-dark": "#2D3250",
-        "brand-medium": "#424769",
-        "brand-light": "#676F9D",
-        "brand-highlight": "#F9B17A",
+        "risk-primary": "#cd5400",
+        "risk-light": "#ffb3a1",
+        "risk-dark": "#602300",
+        "mitigation-primary": "#3d8066",
+        "mitigation-light": "#9ef9d4",
+        "mitigation-dark": "#295a47",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
       },
     },
   },

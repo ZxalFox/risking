@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.2.0
+
+### Added
+- Rebuilt the Login/Landing page adhering strictly to the `DESIGN.md` guidelines.
+- Dynamic responsive `LocaleSwitcher` component with an elegant dark-theme styling.
+- Configured custom brand colors (`risk-primary`, `mitigation-primary`) in `tailwind.config.ts`.
+- Integrated `GameContext` directly into the Login page for seamless room creation and joining.
+- Client-side dynamic network address resolution for WebSockets (`GameContext`).
+
+### Changed
+- Removed boilerplate translations and added game-specific ones to `pt-BR.json` and `en.json`.
 ## 1.1.0
 
 ### Added

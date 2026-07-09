@@ -47,7 +47,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <div className="flex min-h-dvh flex-col">
             <GameProvider>
-              <header className="flex bg-amber-500 justify-end px-6 py-4">
+              <header className="absolute top-4 right-4 z-50">
                 <LocaleSwitcher />
               </header>
               <div className="flex-1">{children}</div>
