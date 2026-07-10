@@ -13,6 +13,7 @@ interface GameContextProps {
   createRoom: (nickname: string) => void;
   joinRoom: (roomId: string, nickname: string) => void;
   startGame: (roomId: string) => void;
+  leaveRoom: (roomId: string) => void;
   attack: (roomId: string, targetId: string, riskCardId: string) => void;
   defend: (roomId: string, success: boolean, mitigationCardId?: string) => void;
 }
@@ -90,6 +91,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     socket?.emit("startGame", { roomId });
   }, []);
 
+  const leaveRoom = useCallback((roomId: string) => {
+    socket?.emit("leaveRoom", { roomId });
+    setRoom(null);
+  }, []);
+
   const attack = useCallback((roomId: string, targetId: string, riskCardId: string) => {
     socket?.emit("attack", { roomId, targetId, riskCardId });
   }, []);
@@ -108,6 +114,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         createRoom,
         joinRoom,
         startGame,
+        leaveRoom,
         attack,
         defend,
       }}

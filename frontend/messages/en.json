@@ -18,5 +18,26 @@
     "label": "Language",
     "en": "English",
     "pt-BR": "Portuguese (Brazil)"
+  },
+  "Lobby": {
+    "waiting": "Waiting for Players...",
+    "players": "Players in Room",
+    "host": "Host",
+    "you": "You",
+    "startGame": "Start Game",
+    "waitingToStart": "Wait for the host to start the game...",
+    "needMorePlayers": "Need at least 2 players to start.",
+    "leaveRoom": "Leave Room",
+    "roomId": "Room Code"
+  },
+  "Game": {
+    "roomId": "Room Code",
+    "round": "Round",
+    "yourTurn": "Your Turn!",
+    "waitingTurn": "Waiting for:",
+    "players": "Players",
+    "defendQuestion": "How will you mitigate this risk?",
+    "explainDefend": "Explain Mitigation",
+    "money": "Money"
   }
 }

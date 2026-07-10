@@ -61,6 +61,19 @@ let GameGateway = class GameGateway {
             client.emit('error', { data: e.message });
         }
     }
+    async handleLeaveRoom(client, data) {
+        try {
+            await this.gameService.leaveRoom(data.roomId, client.id);
+            client.leave(data.roomId);
+            const room = await this.gameService.getRoom(data.roomId);
+            if (room) {
+                this.server.to(data.roomId).emit('roomUpdated', room);
+            }
+        }
+        catch (e) {
+            client.emit('error', { data: e.message });
+        }
+    }
     async handleAttack(client, data) {
         try {
             const room = await this.gameService.attack(data.roomId, client.id, data.targetId, data.riskCardId);
@@ -109,6 +122,14 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleStartGame", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('leaveRoom'),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", Promise)
+], GameGateway.prototype, "handleLeaveRoom", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('attack'),
     __param(0, (0, websockets_1.ConnectedSocket)()),

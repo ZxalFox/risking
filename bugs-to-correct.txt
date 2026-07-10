@@ -1,0 +1,2 @@
+- Retorna para a página inicial quando o idioma é trocado na tela de Lobby
+- Responsividade do dropdown de idiomas

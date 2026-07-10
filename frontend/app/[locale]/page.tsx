@@ -110,7 +110,7 @@ export default function HomePage({ params }: { params: PageParams }) {
                 type="text"
                 placeholder={t("roomIdPlaceholder")}
                 value={roomId}
-                onChange={(e) => setRoomId(e.target.value.toLowerCase())}
+                onChange={(e) => setRoomId(e.target.value.toUpperCase())}
                 className="w-full bg-neutral-900 border border-neutral-600 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-mono"
                 autoComplete="off"
               />

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.3.0
+
+### Added
+- Rebuilt the Lobby (Waiting Room) UI adhering to the `DESIGN.md` guidelines.
+- Added host vs player visual distinctions and conditional "Start Game" rendering.
+- Implemented `leaveRoom` socket event in `GameGateway` (Backend) to handle player disconnections safely.
+- Implemented `leaveRoom` function in `GameContext` (Frontend) to manage local state reset.
+- Added `Lobby` and `Game` translation namespaces in `pt-BR.json` and `en.json`.
+
+### Changed
+- Removed legacy `Lobby.tsx` component as its functionality is now split between Login and Room pages.
+
+### Fixed
+- Fixed bug where `roomId` inputs were strictly lowercase in the UI causing mismatch with the Backend uppercase hashes ("Room not found" error).
+- Fixed `LocaleSwitcher` overlapping page content during scroll by moving it from a fixed position to the static document flow.
 ## 1.2.0
 
 ### Added

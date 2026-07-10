@@ -18,5 +18,26 @@
     "label": "Idioma",
     "en": "Inglês",
     "pt-BR": "Português (Brasil)"
+  },
+  "Lobby": {
+    "waiting": "Aguardando Jogadores...",
+    "players": "Jogadores na Sala",
+    "host": "Criador",
+    "you": "Você",
+    "startGame": "Iniciar Partida",
+    "waitingToStart": "Aguarde o criador iniciar a partida...",
+    "needMorePlayers": "Mínimo de 2 jogadores para iniciar.",
+    "leaveRoom": "Sair da Sala",
+    "roomId": "Código da Sala"
+  },
+  "Game": {
+    "roomId": "Código da Sala",
+    "round": "Rodada",
+    "yourTurn": "Sua Vez!",
+    "waitingTurn": "Aguardando turno de:",
+    "players": "Jogadores",
+    "defendQuestion": "Como você irá mitigar esse risco?",
+    "explainDefend": "Explicar Mitigação",
+    "money": "Dinheiro"
   }
 }

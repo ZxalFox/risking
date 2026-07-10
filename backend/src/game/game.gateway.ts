@@ -65,6 +65,21 @@ export class GameGateway implements OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage('leaveRoom')
+  async handleLeaveRoom(@ConnectedSocket() client: Socket, @MessageBody() data: { roomId: string }) {
+    try {
+      await this.gameService.leaveRoom(data.roomId, client.id);
+      client.leave(data.roomId);
+      
+      const room = await this.gameService.getRoom(data.roomId);
+      if (room) {
+        this.server.to(data.roomId).emit('roomUpdated', room);
+      }
+    } catch (e: any) {
+      client.emit('error', { data: e.message });
+    }
+  }
+
   @SubscribeMessage('attack')
   async handleAttack(
     @ConnectedSocket() client: Socket,

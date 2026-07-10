@@ -21,8 +21,8 @@ const fredoka = Fredoka({
 });
 
 type Props = {
-  children: ReactNode;
-  params: Promise<{ locale: string }>;
+  readonly children: ReactNode;
+  readonly params: Promise<{ locale: string }>;
 };
 
 export function generateStaticParams() {
@@ -47,10 +47,10 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <div className="flex min-h-dvh flex-col">
             <GameProvider>
-              <header className="absolute top-4 right-4 z-50">
+              <header className="w-full flex justify-end p-4 bg-neutral-900">
                 <LocaleSwitcher />
               </header>
-              <div className="flex-1">{children}</div>
+              <div className="flex-1 flex flex-col">{children}</div>
             </GameProvider>
           </div>
         </NextIntlClientProvider>
