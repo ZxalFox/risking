@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.4.0
+
+### Added
+- Rebuilt the Game Board UI (`room.status === "playing"`) adhering to the `DESIGN.md` guidelines.
+- `Card.tsx` updated with the new brand colors (`risk-primary`, `mitigation-primary`), dark mode themes, and responsive hover/selection animations.
+- Strict Defense Logic implemented in the Backend (`game.service.ts`), deprecating the "MVP Simulated" verbal defense. Players must now use a valid Mitigation card with a matching category to defend successfully.
+- Added `isCreator` boolean to `PlayerEntity` in PostgreSQL to persistently track the room host, even across connection drops or server restarts.
+
+### Changed
+- Refactored `page.tsx` game UI to remove the "Explicar Mitigação" mock button.
+- Refactored the 'My Hand' and 'Opponents' sidebar to use dark themes and transluscent overlays (`backdrop-blur`).
+
+### Fixed
+- Fixed a bug where a player drawing duplicate Risk Cards caused a React Key collision (`Encountered two children with the same key`), leading to multiple cards being visually selected simultaneously. Cards are now uniquely mapped with their array index.
 ## 1.3.0
 
 ### Added

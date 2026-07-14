@@ -24,6 +24,10 @@ __decorate([
     __metadata("design:type", String)
 ], PlayerEntity.prototype, "nickname", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], PlayerEntity.prototype, "isCreator", void 0);
+__decorate([
     (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], PlayerEntity.prototype, "money", void 0);

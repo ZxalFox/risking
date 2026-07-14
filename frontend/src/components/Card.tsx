@@ -19,12 +19,12 @@ export function Card({ type, category, description, onClick, selected }: CardPro
     <button 
       onClick={onClick}
       className={`
-        w-40 h-56 rounded-xl p-3 flex flex-col justify-between text-left shadow-lg border-2 transition-transform
-        hover:scale-105 active:scale-95
-        ${selected ? 'ring-4 ring-blue-500 scale-105' : ''}
+        w-40 h-56 rounded-xl p-3 flex flex-col justify-between text-left shadow-lg border-2 transition-all duration-300
+        hover:-translate-y-2 active:translate-y-0
+        ${selected ? 'ring-4 ring-orange-400 scale-105' : ''}
         ${isRisk 
-          ? 'bg-orange-500 border-orange-700 text-white' 
-          : 'bg-emerald-600 border-emerald-800 text-white'}
+          ? 'bg-gradient-to-br from-risk-primary to-risk-dark border-risk-dark text-white shadow-risk-primary/40 hover:shadow-risk-primary/60 hover:shadow-xl' 
+          : 'bg-gradient-to-br from-mitigation-primary to-mitigation-dark border-mitigation-dark text-white shadow-mitigation-primary/40 hover:shadow-mitigation-primary/60 hover:shadow-xl'}
       `}
     >
       <div className="font-bold text-sm tracking-wider uppercase border-b border-white/30 pb-1">

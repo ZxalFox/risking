@@ -96,6 +96,7 @@ export class GameService {
         money: 0,
         riskCards: [],
         mitigationCards: [],
+        isCreator: player.isCreator,
         room
       });
       await this.playerRepo.save(newPlayer);
@@ -168,20 +169,19 @@ export class GameService {
 
     if (!target || !attacker) throw new Error('Jogadores inválidos');
 
+    let actualSuccess = false;
     if (mitigationCardId) {
       const mcIndex = target.mitigationCards.findIndex((c: any) => c.id === mitigationCardId);
       if (mcIndex !== -1) {
         const mc = target.mitigationCards[mcIndex];
         if (mc.category === room.currentAttack.riskCard.category) {
           target.mitigationCards.splice(mcIndex, 1);
-          success = true;
-        } else {
-          success = false;
+          actualSuccess = true;
         }
       }
     }
 
-    if (success) {
+    if (actualSuccess) {
       attacker.money -= 5;
       target.money += 5;
     } else {

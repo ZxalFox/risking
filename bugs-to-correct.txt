@@ -1,2 +1,7 @@
 - Retorna para a página inicial quando o idioma é trocado na tela de Lobby
 - Responsividade do dropdown de idiomas
+- Cada jogador está podendo atacar duas vezes seguidas a ideia é atacar apenas uma vez por turno
+- As cartas de mitigação estão genéricas e sem descrição
+- Ao sobrar somente um jogador na partida o jogo não encerra automaticamente
+- A partida não está persistida, um reload na página faz o usuário voltar para a tela inicial
+- Adicionar um botão de copiar para o código da sala no lobby

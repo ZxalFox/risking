@@ -32,7 +32,8 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
 
   const handleAttack = () => {
     if (selectedRisk && selectedTarget) {
-      attack(room.id, selectedTarget, selectedRisk);
+      const realRiskId = selectedRisk.split('-')[0]; // Extrai o ID real da carta ignorando o index
+      attack(room.id, selectedTarget, realRiskId);
       setSelectedRisk(null);
       setSelectedTarget(null);
     }
@@ -42,11 +43,7 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
     defend(room.id, true, mitigationCardId);
   };
 
-  const handleExplainDefend = () => {
-    // In a full game, other players would vote. 
-    // For MVP, we'll just simulate a successful defense if they click explain.
-    defend(room.id, true);
-  };
+
 
   const handleFailDefend = () => {
     defend(room.id, false);
@@ -140,23 +137,25 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         <div className="flex flex-col md:flex-row gap-6 h-[calc(100vh-140px)]">
           
           {/* Opponents Sidebar */}
-          <div className="w-full md:w-64 bg-neutral-800 rounded-xl p-4 flex flex-col gap-4 overflow-y-auto shadow-inner border border-neutral-700">
-            <h3 className="font-heading text-lg border-b border-neutral-700 pb-2">{t("players")}</h3>
+          <div className="w-full md:w-64 bg-neutral-900/80 rounded-2xl p-5 flex flex-col gap-4 overflow-y-auto shadow-2xl border border-neutral-700/50 backdrop-blur-sm">
+            <h3 className="font-heading text-xl font-bold text-neutral-100 border-b border-neutral-700/80 pb-3">{t("players")}</h3>
             {room.players.filter((p:any) => p.id !== socketId).map((p: any) => (
               <div 
                 key={p.id} 
                 onClick={() => isMyTurn && setSelectedTarget(p.id)}
-                className={`p-3 rounded-lg border-2 cursor-pointer transition-colors ${
-                  selectedTarget === p.id ? 'border-orange-500 bg-neutral-700' : 'border-transparent bg-neutral-900 hover:bg-neutral-700'
+                className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                  selectedTarget === p.id 
+                    ? 'border-risk-primary bg-risk-dark/30 shadow-[0_0_15px_rgba(205,84,0,0.2)] scale-[1.02]' 
+                    : 'border-transparent bg-neutral-800/60 hover:bg-neutral-700/80 hover:border-neutral-600'
                 }`}
               >
-                <div className="font-bold flex justify-between">
-                  <span>{p.nickname}</span>
-                  <span className="text-emerald-400">${p.money}</span>
+                <div className="font-bold flex justify-between items-center mb-1">
+                  <span className="text-lg text-white">{p.nickname}</span>
+                  <span className="text-emerald-400 font-mono font-bold text-lg drop-shadow-sm">${p.money}</span>
                 </div>
-                <div className="text-xs text-neutral-400 mt-2 flex justify-between">
-                  <span>Riscos: {p.riskCards.length}</span>
-                  <span>Mitig: {p.mitigationCards.length}</span>
+                <div className="text-xs text-neutral-400 flex justify-between font-medium">
+                  <span className="bg-risk-dark/50 text-risk-light px-2 py-1 rounded-md">Riscos: {p.riskCards.length}</span>
+                  <span className="bg-mitigation-dark/50 text-mitigation-light px-2 py-1 rounded-md">Mitig: {p.mitigationCards.length}</span>
                 </div>
               </div>
             ))}
@@ -182,33 +181,33 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
                   </div>
 
                   {amIAttacked && (
-                    <div className="flex flex-col items-center gap-4 bg-neutral-900 p-6 rounded-2xl border border-orange-500 shadow-2xl">
-                      <p className="text-xl font-bold">{t("defendQuestion")}</p>
+                    <div className="flex flex-col items-center gap-4 bg-neutral-950/90 p-8 rounded-2xl border-2 border-risk-primary shadow-[0_0_30px_rgba(205,84,0,0.4)] animate-in fade-in slide-in-from-bottom-4 backdrop-blur-md mt-4">
+                      <p className="text-2xl font-bold text-white text-center">{t("defendQuestion")}</p>
+                      <p className="text-neutral-300 text-center text-lg mt-1 mb-4 max-w-md">
+                        Clique em uma <strong>Carta de Mitigação</strong> da sua mão abaixo que corresponda à categoria do ataque, ou aceite a penalidade se não tiver defesas.
+                      </p>
                       
-                      <div className="flex flex-wrap gap-4 justify-center mt-2">
-                        <button onClick={handleExplainDefend} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                          {t("explainDefend")} (MVP Simulado)
-                        </button>
-                        <button onClick={handleFailDefend} className="bg-neutral-600 hover:bg-neutral-500 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                          Aceitar Ataque (Pagar 5)
+                      <div className="flex justify-center w-full">
+                        <button onClick={handleFailDefend} className="bg-neutral-900 hover:bg-red-900/50 text-red-400 hover:text-red-300 border border-neutral-700 hover:border-red-500/50 px-8 py-3 rounded-xl font-bold transition-all w-full sm:w-auto shadow-inner">
+                          Aceitar Ataque (-$5)
                         </button>
                       </div>
-
-                      <p className="text-sm text-neutral-400 mt-2">Ou selecione uma Carta de Mitigação compatível nas suas cartas abaixo.</p>
                     </div>
                   )}
                 </div>
               )}
 
               {!room.currentAttack && isMyTurn && (
-                <div className="text-center text-neutral-400">
-                  <p className="text-xl mb-2">Sua vez de atacar!</p>
-                  <p>1. Selecione uma Carta de Risco da sua mão</p>
-                  <p>2. Selecione um Alvo no painel ao lado</p>
+                <div className="text-center text-neutral-300 bg-neutral-900/50 p-6 rounded-2xl border border-risk-dark/50 shadow-inner">
+                  <p className="text-2xl font-bold text-white mb-4">{t("yourTurn")}</p>
+                  <div className="flex flex-col gap-2 text-lg mb-6">
+                    <p className="flex items-center justify-center gap-2"><span className="bg-risk-primary text-white w-6 h-6 rounded-full text-sm flex items-center justify-center font-bold">1</span> Selecione uma Carta de Risco da sua mão</p>
+                    <p className="flex items-center justify-center gap-2"><span className="bg-risk-primary text-white w-6 h-6 rounded-full text-sm flex items-center justify-center font-bold">2</span> Selecione um Alvo no painel ao lado</p>
+                  </div>
                   <button 
                     onClick={handleAttack}
                     disabled={!selectedRisk || !selectedTarget}
-                    className="mt-6 bg-orange-600 hover:bg-orange-500 disabled:bg-neutral-700 text-white px-8 py-3 rounded-full font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg disabled:shadow-none disabled:transform-none"
+                    className="bg-risk-primary hover:bg-orange-500 disabled:bg-neutral-800 text-white px-10 py-4 rounded-xl font-extrabold text-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_15px_rgba(205,84,0,0.5)] disabled:shadow-none disabled:text-neutral-500 disabled:transform-none border border-transparent disabled:border-neutral-700"
                   >
                     CONFIRMAR ATAQUE
                   </button>
@@ -223,33 +222,39 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
             </div>
 
             {/* My Hand */}
-            <div className="bg-neutral-800 rounded-xl p-4 shadow-md border border-neutral-700">
-              <div className="flex justify-between items-center border-b border-neutral-700 pb-2 mb-4">
-                <h3 className="font-heading text-lg">Sua Mão</h3>
-                <span className="bg-emerald-900/50 text-emerald-400 border border-emerald-800 px-4 py-1 rounded-full font-bold text-lg">
-                  {t("money")}: ${me?.money}
-                </span>
+            <div className="bg-neutral-900/80 rounded-2xl p-5 shadow-2xl border border-neutral-700/50 backdrop-blur-sm">
+              <div className="flex justify-between items-center border-b border-neutral-700/80 pb-3 mb-5">
+                <h3 className="font-heading text-xl font-bold text-neutral-100">Sua Mão</h3>
+                <div className="flex items-center gap-3">
+                  <span className="text-neutral-400 font-medium text-sm">Seu Saldo</span>
+                  <span className="bg-mitigation-dark/30 text-emerald-400 border border-emerald-800/50 px-5 py-2 rounded-xl font-mono font-bold text-xl drop-shadow-md shadow-inner">
+                    ${me?.money}
+                  </span>
+                </div>
               </div>
               
               <div className="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
                 {/* Risk Cards */}
-                {me?.riskCards.map((c: any) => (
-                  <Card 
-                    key={c.id} 
-                    type="risk" 
-                    category={c.category} 
-                    description={c.description}
-                    selected={selectedRisk === c.id}
-                    onClick={() => isMyTurn && !room.currentAttack && setSelectedRisk(c.id === selectedRisk ? null : c.id)}
-                  />
-                ))}
+                {me?.riskCards.map((c: any, index: number) => {
+                  const uniqueId = `${c.id}-${index}`;
+                  return (
+                    <Card 
+                      key={uniqueId} 
+                      type="risk" 
+                      category={c.category} 
+                      description={c.description}
+                      selected={selectedRisk === uniqueId}
+                      onClick={() => isMyTurn && !room.currentAttack && setSelectedRisk(uniqueId === selectedRisk ? null : uniqueId)}
+                    />
+                  );
+                })}
 
                 <div className="w-px bg-neutral-700 mx-2 self-stretch"></div>
 
                 {/* Mitigation Cards */}
-                {me?.mitigationCards.map((c: any) => (
+                {me?.mitigationCards.map((c: any, index: number) => (
                   <Card 
-                    key={c.id} 
+                    key={`${c.id}-${index}`} 
                     type="mitigation" 
                     category={c.category} 
                     description={"Protege contra: " + c.category}

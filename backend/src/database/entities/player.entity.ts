@@ -9,6 +9,9 @@ export class PlayerEntity {
   @Column()
   nickname: string;
 
+  @Column({ default: false })
+  isCreator: boolean;
+
   @Column({ default: 0 })
   money: number;
 
