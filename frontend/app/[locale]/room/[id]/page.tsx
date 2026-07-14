@@ -11,7 +11,17 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
   const t = useTranslations("Game");
   const tLobby = useTranslations("Lobby");
   const router = useRouter();
-  const { room, socketId, startGame, leaveRoom, attack, defend, error } = useGame();
+  const { 
+    socketId, 
+    room, 
+    error, 
+    startGame, 
+    leaveRoom, 
+    endGame,
+    clearRoom,
+    attack, 
+    defend 
+  } = useGame();
 
   const [selectedRisk, setSelectedRisk] = useState<string | null>(null);
   const [selectedTarget, setSelectedTarget] = useState<string | null>(null);
@@ -58,13 +68,27 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
         </div>
         
         {room.status === "playing" && (
-          <div className="text-right">
-            <p className="font-semibold text-emerald-400">{t("round")}: {room.currentRound} / 4</p>
-            {isMyTurn ? (
-              <p className="text-lg font-bold text-orange-500 animate-pulse">{t("yourTurn")}</p>
-            ) : (
-              <p className="text-neutral-400">{t("waitingTurn")} <span className="text-white">{room.players[room.currentPlayerIndex]?.nickname}</span></p>
-            )}
+          <div className="flex items-center gap-6">
+            <div className="text-right">
+              <p className="font-semibold text-emerald-400">{t("round")}: {room.currentRound} / 4</p>
+              {isMyTurn ? (
+                <p className="text-lg font-bold text-orange-500 animate-pulse">{t("yourTurn")}</p>
+              ) : (
+                <p className="text-neutral-400">{t("waitingTurn")} <span className="text-white">{room.players[room.currentPlayerIndex]?.nickname}</span></p>
+              )}
+            </div>
+            
+            <div className="border-l border-neutral-700 pl-6">
+              {me?.isCreator ? (
+                <button onClick={() => endGame(room.id)} className="bg-red-900/50 hover:bg-red-600 text-red-200 hover:text-white border border-red-800/50 hover:border-red-500 px-4 py-2 rounded-lg text-sm font-bold transition-all">
+                  Finalizar Partida
+                </button>
+              ) : (
+                <button onClick={() => leaveRoom(room.id)} className="bg-neutral-700/50 hover:bg-red-600 text-neutral-300 hover:text-white border border-neutral-600 hover:border-red-500 px-4 py-2 rounded-lg text-sm font-bold transition-all">
+                  Sair da Partida
+                </button>
+              )}
+            </div>
           </div>
         )}
       </header>
@@ -269,19 +293,31 @@ export default function RoomPage({ params }: { params: Promise<{ id: string }> }
       )}
 
       {room.status === "finished" && (
-        <div className="flex flex-col items-center justify-center py-20 text-center animate-in zoom-in">
-          <h2 className="text-5xl font-extrabold text-orange-500 mb-6 drop-shadow-lg">Fim de Jogo!</h2>
-          <div className="bg-neutral-800 p-8 rounded-2xl border-2 border-orange-500/50 shadow-[0_0_30px_rgba(249,115,22,0.2)]">
-            <h3 className="text-2xl font-bold mb-6">Placar Final</h3>
-            <ul className="space-y-4">
+        <div className="flex flex-col items-center justify-center pt-20 pb-20 px-4 h-full min-h-[60vh]">
+          <div className="bg-neutral-900/90 border border-risk-primary/50 shadow-[0_0_40px_rgba(205,84,0,0.2)] p-10 rounded-3xl text-center max-w-lg w-full backdrop-blur-md animate-in zoom-in duration-500">
+            <h2 className="text-4xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-red-600 mb-4">
+              Fim de Jogo!
+            </h2>
+            <p className="text-neutral-300 text-lg mb-8">
+              A partida foi encerrada. Confira o placar abaixo:
+            </p>
+
+            <ul className="space-y-4 mb-8">
               {[...room.players].sort((a:any, b:any) => b.money - a.money).map((p:any, i:number) => (
-                <li key={p.id} className="flex justify-between items-center text-xl bg-neutral-900 px-6 py-4 rounded-lg">
-                  <span>{i === 0 ? "👑 " : ""}{p.nickname}</span>
-                  <span className="font-bold text-emerald-400">${p.money}</span>
+                <li key={p.id} className="flex justify-between items-center text-xl bg-neutral-950 px-6 py-4 rounded-xl border border-neutral-800">
+                  <span className="text-white font-medium">{i === 0 ? "👑 " : ""}{p.nickname}</span>
+                  <span className="font-bold text-emerald-400 font-mono">${p.money}</span>
                 </li>
               ))}
             </ul>
-            <button onClick={() => router.push("/")} className="mt-8 bg-neutral-700 hover:bg-neutral-600 px-6 py-3 rounded-full font-bold transition-colors">
+
+            <button
+              onClick={() => {
+                clearRoom();
+                router.push("/");
+              }}
+              className="bg-orange-600 hover:bg-orange-500 text-white font-bold py-4 px-8 rounded-xl transition-all shadow-lg hover:shadow-orange-500/30 transform hover:scale-105 active:scale-95 w-full"
+            >
               Voltar ao Início
             </button>
           </div>

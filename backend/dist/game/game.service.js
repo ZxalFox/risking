@@ -86,17 +86,18 @@ let GameService = class GameService {
         const room = await this.roomRepo.findOne({ where: { id: roomId } });
         if (!room)
             throw new Error('Sala não encontrada');
-        if (room.status !== 'waiting')
-            throw new Error('Jogo já começou');
-        if (room.players.length >= 5)
-            throw new Error('Sala cheia');
         let existing = await this.playerRepo.findOne({ where: { room: { id: roomId }, nickname: player.nickname } });
+        if (room.status !== 'waiting' && !existing) {
+            throw new Error('Jogo já começou');
+        }
+        let dbPlayer;
         if (existing) {
-            existing.id = player.id;
-            await this.playerRepo.save(existing);
+            dbPlayer = existing;
         }
         else {
-            const newPlayer = this.playerRepo.create({
+            if (room.players.length >= 5)
+                throw new Error('Sala cheia');
+            dbPlayer = this.playerRepo.create({
                 id: player.id,
                 nickname: player.nickname,
                 money: 0,
@@ -105,16 +106,41 @@ let GameService = class GameService {
                 isCreator: player.isCreator,
                 room
             });
-            await this.playerRepo.save(newPlayer);
+            await this.playerRepo.save(dbPlayer);
         }
-        return (await this.roomRepo.findOne({ where: { id: roomId } }));
+        const updatedRoom = (await this.roomRepo.findOne({ where: { id: roomId } }));
+        return { room: updatedRoom, player: dbPlayer };
     }
     async leaveRoom(roomId, playerId) {
+        const player = await this.playerRepo.findOne({ where: { id: playerId, room: { id: roomId } } });
+        if (!player)
+            return;
+        if (player.isCreator) {
+            throw new Error('O Host não pode sair da partida, apenas finalizá-la');
+        }
         await this.playerRepo.delete({ id: playerId });
         const room = await this.roomRepo.findOne({ where: { id: roomId } });
-        if (room && room.players.length === 0) {
-            await this.roomRepo.delete(roomId);
+        if (room) {
+            if (room.players.length === 0) {
+                await this.roomRepo.delete(roomId);
+            }
+            else if (room.status === 'playing' && room.players.length === 1) {
+                room.status = 'finished';
+                await this.roomRepo.save(room);
+            }
         }
+    }
+    async endGame(roomId, hostId) {
+        const room = await this.roomRepo.findOne({ where: { id: roomId } });
+        if (!room)
+            throw new Error('Sala não encontrada');
+        const host = room.players.find(p => p.id === hostId);
+        if (!host || !host.isCreator) {
+            throw new Error('Apenas o Host pode finalizar a partida');
+        }
+        room.status = 'finished';
+        await this.roomRepo.save(room);
+        return (await this.roomRepo.findOne({ where: { id: roomId } }));
     }
     async startGame(roomId) {
         const room = await this.roomRepo.findOne({ where: { id: roomId } });

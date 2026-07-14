@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.5.0
+
+### Added
+- Implemented robust Game Session Persistence allowing players to safely reload the page or survive short connection drops without losing their player state.
+- Added "Sair da Partida" (Leave Room) and "Finalizar Partida" (End Game) buttons to the active Game Board.
+- Added automatic game termination logic if all players leave and only the host remains.
+- Added a polished Game Over screen that now incorporates the Final Leaderboard natively.
+
+### Fixed
+- Fixed an issue where the React Context would enter an infinite redirect loop when returning to the Homepage from the Game Over screen.
+- Fixed a WebSocket auto-reconnect bug triggered by `next-intl` layout remounts during language switching.
+- Fixed an architectural bug with TypeORM where returning players were being cloned into new database entities instead of reusing their original Player ID.
+
+
 ## 1.4.0
 
 ### Added

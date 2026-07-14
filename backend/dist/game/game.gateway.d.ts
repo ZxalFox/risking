@@ -4,6 +4,7 @@ import { GameService } from './game.service';
 export declare class GameGateway implements OnGatewayDisconnect {
     private readonly gameService;
     server: Server;
+    private clientToPlayer;
     constructor(gameService: GameService);
     handleDisconnect(client: Socket): void;
     handleCreateRoom(client: Socket, data: {
@@ -17,6 +18,9 @@ export declare class GameGateway implements OnGatewayDisconnect {
         roomId: string;
     }): Promise<void>;
     handleLeaveRoom(client: Socket, data: {
+        roomId: string;
+    }): Promise<void>;
+    handleEndGame(client: Socket, data: {
         roomId: string;
     }): Promise<void>;
     handleAttack(client: Socket, data: {

@@ -19,19 +19,22 @@ const game_service_1 = require("./game.service");
 let GameGateway = class GameGateway {
     constructor(gameService) {
         this.gameService = gameService;
+        this.clientToPlayer = new Map();
     }
     handleDisconnect(client) {
+        this.clientToPlayer.delete(client.id);
     }
     async handleCreateRoom(client, data) {
         try {
             const roomId = await this.gameService.createRoom();
             client.join(roomId);
-            const room = await this.gameService.joinRoom(roomId, {
+            const { room, player } = await this.gameService.joinRoom(roomId, {
                 id: client.id,
                 nickname: data.nickname,
                 isCreator: true
             });
-            client.emit('roomCreated', { event: 'roomCreated', data: room });
+            this.clientToPlayer.set(client.id, player.id);
+            client.emit('roomCreated', { event: 'roomCreated', data: room, playerId: player.id });
         }
         catch (e) {
             client.emit('roomCreated', { event: 'error', data: e.message });
@@ -39,14 +42,15 @@ let GameGateway = class GameGateway {
     }
     async handleJoinRoom(client, data) {
         try {
-            const room = await this.gameService.joinRoom(data.roomId, {
+            const { room, player } = await this.gameService.joinRoom(data.roomId, {
                 id: client.id,
                 nickname: data.nickname,
                 isCreator: false
             });
+            this.clientToPlayer.set(client.id, player.id);
             client.join(data.roomId);
             this.server.to(data.roomId).emit('roomUpdated', room);
-            client.emit('roomJoined', { event: 'roomJoined', data: room });
+            client.emit('roomJoined', { event: 'roomJoined', data: room, playerId: player.id });
         }
         catch (e) {
             client.emit('roomJoined', { event: 'error', data: e.message });
@@ -63,7 +67,9 @@ let GameGateway = class GameGateway {
     }
     async handleLeaveRoom(client, data) {
         try {
-            await this.gameService.leaveRoom(data.roomId, client.id);
+            const playerId = this.clientToPlayer.get(client.id) || client.id;
+            await this.gameService.leaveRoom(data.roomId, playerId);
+            this.clientToPlayer.delete(client.id);
             client.leave(data.roomId);
             const room = await this.gameService.getRoom(data.roomId);
             if (room) {
@@ -74,9 +80,20 @@ let GameGateway = class GameGateway {
             client.emit('error', { data: e.message });
         }
     }
+    async handleEndGame(client, data) {
+        try {
+            const playerId = this.clientToPlayer.get(client.id) || client.id;
+            const room = await this.gameService.endGame(data.roomId, playerId);
+            this.server.to(data.roomId).emit('roomUpdated', room);
+        }
+        catch (e) {
+            client.emit('error', { data: e.message });
+        }
+    }
     async handleAttack(client, data) {
         try {
-            const room = await this.gameService.attack(data.roomId, client.id, data.targetId, data.riskCardId);
+            const playerId = this.clientToPlayer.get(client.id) || client.id;
+            const room = await this.gameService.attack(data.roomId, playerId, data.targetId, data.riskCardId);
             this.server.to(data.roomId).emit('attacked', room);
         }
         catch (e) {
@@ -85,7 +102,8 @@ let GameGateway = class GameGateway {
     }
     async handleDefend(client, data) {
         try {
-            const room = await this.gameService.defend(data.roomId, client.id, data.success, data.mitigationCardId);
+            const playerId = this.clientToPlayer.get(client.id) || client.id;
+            const room = await this.gameService.defend(data.roomId, playerId, data.success, data.mitigationCardId);
             this.server.to(data.roomId).emit('defenseResult', room);
         }
         catch (e) {
@@ -130,6 +148,14 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], GameGateway.prototype, "handleLeaveRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('endGame'),
+    __param(0, (0, websockets_1.ConnectedSocket)()),
+    __param(1, (0, websockets_1.MessageBody)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", Promise)
+], GameGateway.prototype, "handleEndGame", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('attack'),
     __param(0, (0, websockets_1.ConnectedSocket)()),

@@ -14,6 +14,8 @@ interface GameContextProps {
   joinRoom: (roomId: string, nickname: string) => void;
   startGame: (roomId: string) => void;
   leaveRoom: (roomId: string) => void;
+  endGame: (roomId: string) => void;
+  clearRoom: () => void;
   attack: (roomId: string, targetId: string, riskCardId: string) => void;
   defend: (roomId: string, success: boolean, mitigationCardId?: string) => void;
 }
@@ -24,6 +26,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [room, setRoom] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [playerId, setPlayerId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!socket) {
@@ -34,9 +37,28 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     setIsConnected(socket.connected);
 
+    const session = localStorage.getItem('risking_session');
+    
+    const tryReconnect = () => {
+      if (session && socket) {
+        try {
+          const { roomId, nickname } = JSON.parse(session);
+          if (roomId && nickname) {
+            socket.emit("joinRoom", { roomId, nickname });
+          }
+        } catch (e) {}
+      }
+    };
+
+    if (socket.connected) {
+      setIsConnected(true);
+      tryReconnect();
+    }
+
     socket.on("connect", () => {
       setIsConnected(true);
       setError(null);
+      tryReconnect();
     });
 
     socket.on("connect_error", (err) => {
@@ -48,18 +70,39 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
     socket.on("roomCreated", (data) => {
       if (data.event === "error") setError(data.data);
-      else setRoom(data.data);
+      else {
+        setRoom(data.data);
+        if (data.playerId) setPlayerId(data.playerId);
+        const me = data.data.players.find((p: any) => p.id === (data.playerId || socket?.id));
+        if (me) localStorage.setItem('risking_session', JSON.stringify({ roomId: data.data.id, nickname: me.nickname }));
+      }
     });
 
     socket.on("roomJoined", (data) => {
-      if (data.event === "error") setError(data.data);
-      else setRoom(data.data);
+      if (data.event === "error") {
+        setError(data.data);
+        if (data.data === 'Sala não encontrada' || data.data === 'Jogo já começou') {
+          localStorage.removeItem('risking_session');
+        }
+      } else {
+        setRoom(data.data);
+        if (data.playerId) setPlayerId(data.playerId);
+        const me = data.data.players.find((p: any) => p.id === (data.playerId || socket?.id));
+        if (me) localStorage.setItem('risking_session', JSON.stringify({ roomId: data.data.id, nickname: me.nickname }));
+      }
     });
 
-    socket.on("roomUpdated", (data) => setRoom(data));
-    socket.on("gameStarted", (data) => setRoom(data));
-    socket.on("attacked", (data) => setRoom(data));
-    socket.on("defenseResult", (data) => setRoom(data));
+    const handleRoomData = (data: any) => {
+      setRoom(data);
+      if (data && data.status === 'finished') {
+        localStorage.removeItem('risking_session');
+      }
+    };
+
+    socket.on("roomUpdated", handleRoomData);
+    socket.on("gameStarted", handleRoomData);
+    socket.on("attacked", handleRoomData);
+    socket.on("defenseResult", handleRoomData);
     socket.on("error", (err) => setError(err.data || err));
 
     return () => {
@@ -94,6 +137,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const leaveRoom = useCallback((roomId: string) => {
     socket?.emit("leaveRoom", { roomId });
     setRoom(null);
+    setPlayerId(null);
+    localStorage.removeItem('risking_session');
+  }, []);
+
+  const endGame = useCallback((roomId: string) => {
+    socket?.emit("endGame", { roomId });
+  }, []);
+
+  const clearRoom = useCallback(() => {
+    setRoom(null);
+    setPlayerId(null);
+    localStorage.removeItem('risking_session');
   }, []);
 
   const attack = useCallback((roomId: string, targetId: string, riskCardId: string) => {
@@ -107,7 +162,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   return (
     <GameContext.Provider
       value={{
-        socketId: socket?.id,
+        socketId: playerId || socket?.id,
         isConnected,
         room,
         error,
@@ -115,6 +170,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         joinRoom,
         startGame,
         leaveRoom,
+        endGame,
+        clearRoom,
         attack,
         defend,
       }}
