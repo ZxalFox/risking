@@ -6,7 +6,6 @@ export declare class GameService {
     private readonly roomRepo;
     private readonly playerRepo;
     constructor(roomRepo: Repository<RoomEntity>, playerRepo: Repository<PlayerEntity>);
-    private readonly MOCK_MITIGATIONS;
     private readonly MOCK_RISK_CARDS;
     private readonly MOCK_MITIGATION_CARDS;
     createRoom(): Promise<string>;

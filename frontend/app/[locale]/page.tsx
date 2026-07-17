@@ -11,7 +11,7 @@ export default function HomePage({ params }: { params: PageParams }) {
   const { locale } = use(params);
   const t = useTranslations("HomePage");
   const router = useRouter();
-  
+
   const { createRoom, joinRoom, room, error, isConnected } = useGame();
 
   const [nickname, setNickname] = useState("");
@@ -50,32 +50,37 @@ export default function HomePage({ params }: { params: PageParams }) {
   return (
     <main className="min-h-screen bg-neutral-900 flex items-center justify-center p-6 font-body text-white">
       <div className="max-w-md w-full bg-neutral-800 rounded-2xl shadow-2xl p-8 border border-neutral-700">
-        
         <header className="text-center mb-10">
           <h1 className="text-6xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-red-600 drop-shadow-lg mb-2 pb-2">
             {t("heading")}
           </h1>
-          <p className="text-neutral-400">
-            {t("subheading")}
-          </p>
+          <p className="text-neutral-400">{t("subheading")}</p>
         </header>
 
         <div className="space-y-6">
-          
           {(localError || error) && (
-            <div className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg text-sm font-medium text-center" role="alert">
+            <div
+              className="bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg text-sm font-medium text-center"
+              role="alert"
+            >
               {localError || error}
             </div>
           )}
 
           {!isConnected && !error && (
-            <div className="bg-amber-500/10 border border-amber-500 text-amber-400 p-3 rounded-lg text-sm font-medium text-center" role="alert">
+            <div
+              className="bg-amber-500/10 border border-amber-500 text-amber-400 p-3 rounded-lg text-sm font-medium text-center"
+              role="alert"
+            >
               Conectando ao servidor...
             </div>
           )}
 
           <div className="space-y-2">
-            <label htmlFor="nickname" className="text-sm font-semibold text-neutral-300 block">
+            <label
+              htmlFor="nickname"
+              className="text-sm font-semibold text-neutral-300 block"
+            >
               Nickname
             </label>
             <input
@@ -97,10 +102,12 @@ export default function HomePage({ params }: { params: PageParams }) {
             >
               {t("createRoom")}
             </button>
-            
+
             <div className="flex items-center gap-3 py-2">
               <div className="flex-1 h-px bg-neutral-700"></div>
-              <span className="text-xs font-bold text-neutral-500">{t("or")}</span>
+              <span className="text-xs font-bold text-neutral-500">
+                {t("or")}
+              </span>
               <div className="flex-1 h-px bg-neutral-700"></div>
             </div>
 

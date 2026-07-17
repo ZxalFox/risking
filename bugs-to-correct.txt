@@ -1,9 +1,9 @@
 [X] Retorna para a página inicial quando o idioma é trocado na tela de Lobby
 [ ] Responsividade do dropdown de idiomas
 [X] Cada jogador está podendo atacar duas vezes seguidas a ideia é atacar apenas uma vez por turno
-[ ] As cartas de mitigação estão genéricas e sem descrição
+[X] As cartas de mitigação estão genéricas e sem descrição
 [X] Ao sobrar somente um jogador na partida o jogo não encerra automaticamente
 [X] A partida não está persistida, um reload na página faz o usuário voltar para a tela inicial
-[ ] Adicionar um botão de copiar para o código da sala no lobby
-[ ] As traduções não estão completas, muitas strings estão "hard-coded"
-[ ] Melhorar a responsividade de forma geral
+[X] Adicionar um botão de copiar para o código da sala no lobby
+[X] As traduções não estão completas, muitas strings estão "hard-coded"
+[X] Melhorar a responsividade de forma geral

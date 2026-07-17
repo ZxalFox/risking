@@ -1,18 +1,18 @@
-export type RiskCategory = '1. Tarefa' | '2. Estrutura' | '3. Ator' | '4. Tecnologia' | '5. Tarefa-Ator' | '6. Tarefa-Tecnologia' | '7. Estrutura-Tarefas' | '8. Ator-Tecnologia' | '9. Ator-Estrutura' | '10. Estrutura-Tecnologia';
+export type RiskCategory = string;
 export interface Mitigation {
     id: string;
     description: string;
 }
 export interface RiskCard {
     id: string;
-    category: RiskCategory;
-    description: string;
-    mitigations: Mitigation[];
+    categoryId: RiskCategory;
+    descriptionId: string;
+    mitigations?: Mitigation[];
 }
 export interface MitigationCard {
     id: string;
-    category: RiskCategory;
-    mitigations: Mitigation[];
+    categoryId: RiskCategory;
+    mitigations?: Mitigation[];
 }
 export interface Player {
     id: string;

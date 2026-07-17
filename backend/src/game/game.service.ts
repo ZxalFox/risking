@@ -15,52 +15,53 @@ export class GameService {
   ) {}
 
   // Mock data for MVP
-  private readonly MOCK_MITIGATIONS: Mitigation[] = [
-    { id: 'm1', description: 'Ter um representante da equipe no local do cliente.' },
-    { id: 'm2', description: 'Envolva a equipe de testes no projeto desde o início.' },
-    { id: 'm3', description: 'Realizar workshops de levantamento com stakeholders.' },
-    { id: 'm4', description: 'Estimativa detalhada de custo e cronograma.' }
-  ];
-
   private readonly MOCK_RISK_CARDS: RiskCard[] = [
-    {
-      id: 'r1',
-      category: '1. Tarefa',
-      description: 'Indisponibilidade de documentos de requisitos para testes',
-      mitigations: [this.MOCK_MITIGATIONS[0], this.MOCK_MITIGATIONS[1]]
-    },
-    {
-      id: 'r2',
-      category: '1. Tarefa',
-      description: 'Requisitos ambíguos ou conflitantes',
-      mitigations: [this.MOCK_MITIGATIONS[2]]
-    },
-    {
-      id: 'r3',
-      category: '2. Estrutura',
-      description: 'Horários e cronogramas irreais',
-      mitigations: [this.MOCK_MITIGATIONS[3]]
-    },
-    {
-      id: 'r4',
-      category: '3. Ator',
-      description: 'Alta rotatividade na equipe',
-      mitigations: [{ id: 'm5', description: 'Plano de retenção e reconhecimento' }]
-    },
-    {
-      id: 'r5',
-      category: '4. Tecnologia',
-      description: 'Ferramentas de build instáveis',
-      mitigations: [{ id: 'm6', description: 'Automatizar pipelines' }]
-    }
+    { id: 'r1', categoryId: 'task', descriptionId: 'risk_1' },
+    { id: 'r2', categoryId: 'task', descriptionId: 'risk_2' },
+    { id: 'r3', categoryId: 'task', descriptionId: 'risk_3' },
+    { id: 'r4', categoryId: 'structure', descriptionId: 'risk_4' },
+    { id: 'r5', categoryId: 'structure', descriptionId: 'risk_5' },
+    { id: 'r6', categoryId: 'structure', descriptionId: 'risk_6' },
+    { id: 'r7', categoryId: 'actor', descriptionId: 'risk_7' },
+    { id: 'r8', categoryId: 'actor', descriptionId: 'risk_8' },
+    { id: 'r9', categoryId: 'actor', descriptionId: 'risk_9' },
+    { id: 'r10', categoryId: 'technology', descriptionId: 'risk_10' },
+    { id: 'r11', categoryId: 'technology', descriptionId: 'risk_11' },
+    { id: 'r12', categoryId: 'technology', descriptionId: 'risk_12' },
+    { id: 'r13', categoryId: 'task_actor', descriptionId: 'risk_13' },
+    { id: 'r14', categoryId: 'task_actor', descriptionId: 'risk_14' },
+    { id: 'r15', categoryId: 'task_actor', descriptionId: 'risk_15' },
+    { id: 'r16', categoryId: 'task_technology', descriptionId: 'risk_16' },
+    { id: 'r17', categoryId: 'task_technology', descriptionId: 'risk_17' },
+    { id: 'r18', categoryId: 'task_technology', descriptionId: 'risk_18' },
+    { id: 'r19', categoryId: 'structure_task', descriptionId: 'risk_19' },
+    { id: 'r20', categoryId: 'structure_task', descriptionId: 'risk_20' },
+    { id: 'r21', categoryId: 'actor_technology', descriptionId: 'risk_21' },
+    { id: 'r22', categoryId: 'actor_technology', descriptionId: 'risk_22' },
+    { id: 'r23', categoryId: 'actor_structure', descriptionId: 'risk_23' },
+    { id: 'r24', categoryId: 'actor_structure', descriptionId: 'risk_24' },
+    { id: 'r25', categoryId: 'structure_technology', descriptionId: 'risk_25' },
+    { id: 'r26', categoryId: 'structure_technology', descriptionId: 'risk_26' }
   ];
 
   private readonly MOCK_MITIGATION_CARDS: MitigationCard[] = [
-    { id: 'mc1', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[0], this.MOCK_MITIGATIONS[1], this.MOCK_MITIGATIONS[2]] },
-    { id: 'mc2', category: '2. Estrutura', mitigations: [this.MOCK_MITIGATIONS[3]] },
-    { id: 'mc3', category: '3. Ator', mitigations: [{ id: 'm5', description: 'Plano de retenção e reconhecimento' }] },
-    { id: 'mc4', category: '4. Tecnologia', mitigations: [{ id: 'm6', description: 'Automatizar pipelines' }] },
-    { id: 'mc5', category: '1. Tarefa', mitigations: [this.MOCK_MITIGATIONS[2]] }
+    { id: 'm1', categoryId: 'task' },
+    { id: 'm2', categoryId: 'structure' },
+    { id: 'm3', categoryId: 'actor' },
+    { id: 'm4', categoryId: 'technology' },
+    { id: 'm5', categoryId: 'task_actor' },
+    { id: 'm6', categoryId: 'task_technology' },
+    { id: 'm7', categoryId: 'structure_task' },
+    { id: 'm8', categoryId: 'actor_technology' },
+    { id: 'm9', categoryId: 'actor_structure' },
+    { id: 'm10', categoryId: 'structure_technology' },
+    { id: 'm11', categoryId: 'task' },
+    { id: 'm12', categoryId: 'structure' },
+    { id: 'm13', categoryId: 'actor' },
+    { id: 'm14', categoryId: 'technology' },
+    { id: 'm15', categoryId: 'task_actor' },
+    { id: 'm16', categoryId: 'task_technology' },
+    { id: 'm17', categoryId: 'structure_task' }
   ];
 
   async createRoom(): Promise<string> {
@@ -205,7 +206,7 @@ export class GameService {
       const mcIndex = target.mitigationCards.findIndex((c: any) => c.id === mitigationCardId);
       if (mcIndex !== -1) {
         const mc = target.mitigationCards[mcIndex];
-        if (mc.category === room.currentAttack.riskCard.category) {
+        if (mc.categoryId === room.currentAttack.riskCard.categoryId) {
           target.mitigationCards.splice(mcIndex, 1);
           actualSuccess = true;
         }

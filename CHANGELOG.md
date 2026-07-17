@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.6.0
+
+### Added
+- Implemented official Game Cards data based on `AGENTS.md`. Both Risk and Mitigation cards now carry their precise definitions and categorization.
+- Added dynamic Category Icons to cards using `react-icons`, alongside an elegant translucent watermark effect for the card background.
+- Added a "Copy Room Code" button to the header to facilitate sharing links with other players.
+- Re-architected backend payloads to rely on `categoryId` and `descriptionId`, decoupling language dependencies from network state.
+- Integrated missing translation namespaces (`Categories`, `Risks`, `Mitigations`) ensuring 100% localization for both `en` and `pt-BR` card text.
+- Formatted Mitigation Cards texts into clear bulleted lists, truncating long sentences to a maximum of 3 items to preserve UI integrity.
+
+### Fixed
+- Fixed an issue where the game board felt "squeezed" on small screens due to fixed viewport constraints, allowing it to breathe by switching to a minimum height and sticky sidebars.
+- Fixed a layout constraint causing cards to clip on the top/bottom when scaled during the hover effect by adjusting vertical padding margins within the container.
+- Optimized the current Attack display panel by switching to a side-by-side flex layout on desktop screens, significantly improving space utilization.
+- Prevented potential client-side crashes with missing translation keys by adding strict fallback mapping (`unknown`).
+
 ## 1.5.0
 
 ### Added
