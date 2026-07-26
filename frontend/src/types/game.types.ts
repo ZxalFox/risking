@@ -1,4 +1,3 @@
-export type RiskCategory = string;
 
 export interface Mitigation {
   id: string;
@@ -7,14 +6,14 @@ export interface Mitigation {
 
 export interface RiskCard {
   id: string;
-  categoryId: RiskCategory;
+  categoryId: string;
   descriptionId: string;
   mitigations?: Mitigation[];
 }
 
 export interface MitigationCard {
   id: string;
-  categoryId: RiskCategory;
+  categoryId: string;
   mitigations?: Mitigation[];
 }
 
@@ -30,14 +29,13 @@ export interface Player {
 export interface Room {
   id: string;
   players: Player[];
-  status: "waiting" | "playing" | "finished";
+  status: 'waiting' | 'playing' | 'finished';
   currentRound: number;
   currentPlayerIndex: number;
-  // Attack state
   currentAttack?: {
     attackerId: string;
     targetId: string;
     riskCard: RiskCard;
-    timeout?: NodeJS.Timeout; // To track the 1 minute limit maybe
+    timeout?: number | NodeJS.Timeout;
   };
 }

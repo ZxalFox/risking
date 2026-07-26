@@ -10,7 +10,9 @@
     "dev:frontend": "cd frontend && yarn dev",
     "dev:backend": "cd backend && yarn start:dev",
     "dev": "docker compose up -d db && concurrently \"yarn dev:frontend\" \"yarn dev:backend\"",
-    "install:all": "yarn install && cd frontend && yarn install && cd ../backend && yarn install"
+    "install:all": "yarn install && cd frontend && yarn install && cd ../backend && yarn install",
+    "sonar": "cd frontend && npx eslint . && cd ../backend && npx eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "typecheck": "yarn --cwd frontend tsc --noEmit && yarn --cwd backend tsc --noEmit"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

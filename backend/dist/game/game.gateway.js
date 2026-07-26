@@ -36,7 +36,8 @@ let GameGateway = class GameGateway {
             this.clientToPlayer.set(client.id, player.id);
             client.emit('roomCreated', { event: 'roomCreated', data: room, playerId: player.id });
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('roomCreated', { event: 'error', data: e.message });
         }
     }
@@ -52,7 +53,8 @@ let GameGateway = class GameGateway {
             this.server.to(data.roomId).emit('roomUpdated', room);
             client.emit('roomJoined', { event: 'roomJoined', data: room, playerId: player.id });
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('roomJoined', { event: 'error', data: e.message });
         }
     }
@@ -61,7 +63,8 @@ let GameGateway = class GameGateway {
             const room = await this.gameService.startGame(data.roomId);
             this.server.to(data.roomId).emit('gameStarted', room);
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('error', { data: e.message });
         }
     }
@@ -76,7 +79,8 @@ let GameGateway = class GameGateway {
                 this.server.to(data.roomId).emit('roomUpdated', room);
             }
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('error', { data: e.message });
         }
     }
@@ -86,7 +90,8 @@ let GameGateway = class GameGateway {
             const room = await this.gameService.endGame(data.roomId, playerId);
             this.server.to(data.roomId).emit('roomUpdated', room);
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('error', { data: e.message });
         }
     }
@@ -96,7 +101,8 @@ let GameGateway = class GameGateway {
             const room = await this.gameService.attack(data.roomId, playerId, data.targetId, data.riskCardId);
             this.server.to(data.roomId).emit('attacked', room);
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('error', { data: e.message });
         }
     }
@@ -106,7 +112,8 @@ let GameGateway = class GameGateway {
             const room = await this.gameService.defend(data.roomId, playerId, data.success, data.mitigationCardId);
             this.server.to(data.roomId).emit('defenseResult', room);
         }
-        catch (e) {
+        catch (error) {
+            const e = error;
             client.emit('error', { data: e.message });
         }
     }

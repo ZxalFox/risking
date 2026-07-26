@@ -32,6 +32,6 @@ export interface Room {
         attackerId: string;
         targetId: string;
         riskCard: RiskCard;
-        timeout?: any;
+        timeout?: NodeJS.Timeout;
     };
 }

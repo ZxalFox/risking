@@ -1,7 +1,8 @@
-import { Entity, PrimaryColumn, Column, ManyToOne } from 'typeorm';
-import { RoomEntity } from './room.entity';
+import { Entity, PrimaryColumn, Column, ManyToOne } from "typeorm";
+import { RoomEntity } from "./room.entity";
+import { RiskCard, MitigationCard } from "../../game/game.types";
 
-@Entity('players')
+@Entity("players")
 export class PlayerEntity {
   @PrimaryColumn()
   id: string;
@@ -15,12 +16,12 @@ export class PlayerEntity {
   @Column({ default: 0 })
   money: number;
 
-  @Column({ type: 'jsonb', default: [] })
-  riskCards: any[];
+  @Column({ type: "jsonb", default: [] })
+  riskCards: RiskCard[];
 
-  @Column({ type: 'jsonb', default: [] })
-  mitigationCards: any[];
+  @Column({ type: "jsonb", default: [] })
+  mitigationCards: MitigationCard[];
 
-  @ManyToOne(() => RoomEntity, room => room.players, { onDelete: 'CASCADE' })
+  @ManyToOne(() => RoomEntity, (room) => room.players, { onDelete: "CASCADE" })
   room: RoomEntity;
 }

@@ -14,6 +14,8 @@ import {
   FaNetworkWired 
 } from 'react-icons/fa';
 
+import { ElementType } from 'react';
+
 interface CardProps {
   type: "risk" | "mitigation";
   categoryId: string;
@@ -22,7 +24,7 @@ interface CardProps {
   selected?: boolean;
 }
 
-const CategoryIcon: Record<string, any> = {
+const CategoryIcon: Record<string, ElementType> = {
   "task": FaTasks,
   "structure": FaSitemap,
   "actor": FaUserTie,
@@ -80,10 +82,11 @@ export function Card({ type, categoryId, descriptionId, onClick, selected }: Car
         ) : (
           <ul className="text-xs leading-tight mt-1 font-medium text-white/90 text-left list-disc list-outside ml-3 space-y-1">
             {tMit(safeCategoryId)
-              .split(/(?=\d+\.\s)/)
+              // eslint-disable-next-line sonarjs/super-linear-regex
+              .split(/\d+\.\s/)
               .filter((s: string) => s.trim().length > 0)
               .map((item: string, i: number) => (
-                <li key={i}>{item.replace(/^\d+\.\s/, '').trim()}</li>
+                <li key={i}>{item.trim()}</li>
               ))}
           </ul>
         )}

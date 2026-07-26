@@ -8,7 +8,7 @@ import { useGame } from "@/context/GameContext";
 type PageParams = Promise<{ locale: string }>;
 
 export default function HomePage({ params }: { params: PageParams }) {
-  const { locale } = use(params);
+  use(params);
   const t = useTranslations("HomePage");
   const router = useRouter();
 

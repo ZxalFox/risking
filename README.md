@@ -30,6 +30,14 @@ yarn dev
 - O **Frontend** estará disponível em: [http://localhost:3000](http://localhost:3000)
 - O **Backend** estará rodando em: `http://localhost:3001`
 
+### 4. Análise Estática de Código (Qualidade)
+
+Para executar as verificações de Clean Code e auditoria do SonarJS em ambos os projetos (frontend e backend), execute:
+
+```bash
+yarn sonar
+```
+
 ### Alternativa: Rodando a Aplicação Inteira via Docker
 
 Caso você queira rodar os containers completos (Frontend e Backend emulando o ambiente de produção), utilize:

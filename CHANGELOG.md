@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.7.0
+
+### Added
+- Integrated `eslint-plugin-sonarjs` for static code analysis directly via terminal, removing the need for SonarQube Docker containers and reducing hardware consumption.
+- Configured ESLint 9 (Flat Config) standard for both frontend and backend to centralize code quality checks.
+
+### Changed
+- Refactored frontend code to fix detected code smells (super-linear regexes, redundant types, and empty catch blocks).
+- Removed legacy SonarQube Docker scripts (`run-sonar.sh`) and compose file (`docker-compose.sonar.yml`), migrating the `yarn sonar` script in `package.json` to execute ESLint locally across workspaces.
+
 ## 1.6.0
 
 ### Added

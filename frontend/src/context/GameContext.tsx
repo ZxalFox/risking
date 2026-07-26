@@ -2,13 +2,14 @@
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
 import { io, Socket } from "socket.io-client";
+import { Room, Player } from "../types/game.types";
 
 let socket: Socket | null = null;
 
 interface GameContextProps {
   socketId?: string;
   isConnected: boolean;
-  room: any;
+  room: Room | null;
   error: string | null;
   createRoom: (nickname: string) => void;
   joinRoom: (roomId: string, nickname: string) => void;
@@ -24,7 +25,7 @@ const GameContext = createContext<GameContextProps | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
-  const [room, setRoom] = useState<any>(null);
+  const [room, setRoom] = useState<Room | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [playerId, setPlayerId] = useState<string | null>(null);
 
@@ -46,7 +47,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
           if (roomId && nickname) {
             socket.emit("joinRoom", { roomId, nickname });
           }
-        } catch (e) {}
+        } catch (e) {
+          console.warn("Falha ao recuperar sessão", e);
+        }
       }
     };
 
@@ -73,7 +76,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       else {
         setRoom(data.data);
         if (data.playerId) setPlayerId(data.playerId);
-        const me = data.data.players.find((p: any) => p.id === (data.playerId || socket?.id));
+        const me = data.data.players.find((p: Player) => p.id === (data.playerId || socket?.id));
         if (me) localStorage.setItem('risking_session', JSON.stringify({ roomId: data.data.id, nickname: me.nickname }));
       }
     });
@@ -87,12 +90,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
       } else {
         setRoom(data.data);
         if (data.playerId) setPlayerId(data.playerId);
-        const me = data.data.players.find((p: any) => p.id === (data.playerId || socket?.id));
+        const me = data.data.players.find((p: Player) => p.id === (data.playerId || socket?.id));
         if (me) localStorage.setItem('risking_session', JSON.stringify({ roomId: data.data.id, nickname: me.nickname }));
       }
     });
 
-    const handleRoomData = (data: any) => {
+    const handleRoomData = (data: Room) => {
       setRoom(data);
       if (data && data.status === 'finished') {
         localStorage.removeItem('risking_session');
