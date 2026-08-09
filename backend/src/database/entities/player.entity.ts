@@ -1,4 +1,10 @@
-import { Entity, PrimaryColumn, Column, ManyToOne } from "typeorm";
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from "typeorm";
 import { RoomEntity } from "./room.entity";
 import { RiskCard, MitigationCard } from "../../game/game.types";
 
@@ -21,6 +27,9 @@ export class PlayerEntity {
 
   @Column({ type: "jsonb", default: [] })
   mitigationCards: MitigationCard[];
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @ManyToOne(() => RoomEntity, (room) => room.players, { onDelete: "CASCADE" })
   room: RoomEntity;

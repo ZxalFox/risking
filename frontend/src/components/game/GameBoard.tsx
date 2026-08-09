@@ -82,7 +82,7 @@ export function GameBoard({
                     onClick={handleFailDefend}
                     className="bg-neutral-900 hover:bg-red-900/50 text-red-400 hover:text-red-300 border border-neutral-700 hover:border-red-500/50 px-6 py-2.5 rounded-xl font-bold transition-all w-full shadow-inner text-sm flex items-center justify-center gap-2"
                   >
-                    Aceitar Penalidade (-$5)
+                    {t("acceptPenalty")}
                   </button>
                 </div>
               </div>
@@ -122,7 +122,7 @@ export function GameBoard({
             disabled={!selectedRisk || !selectedTarget}
             className="bg-risk-primary hover:bg-orange-500 disabled:bg-neutral-800 text-white px-10 py-4 rounded-xl font-extrabold text-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_15px_rgba(205,84,0,0.5)] disabled:shadow-none disabled:text-neutral-500 disabled:transform-none border border-transparent disabled:border-neutral-700"
           >
-            CONFIRMAR ATAQUE
+            {t("confirmAttack")}
           </button>
         </div>
       )}

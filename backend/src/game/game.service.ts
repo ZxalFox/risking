@@ -3,13 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { RoomEntity } from "../database/entities/room.entity";
 import { PlayerEntity } from "../database/entities/player.entity";
-import {
-  Player,
-  Room,
-  RiskCard,
-  MitigationCard,
-  Mitigation,
-} from "./game.types";
+import { Player, RiskCard, MitigationCard } from "./game.types";
 
 @Injectable()
 export class GameService {
@@ -71,6 +65,7 @@ export class GameService {
   ];
 
   async createRoom(): Promise<string> {
+    // eslint-disable-next-line sonarjs/pseudo-random
     const roomId = Math.random().toString(36).substring(2, 8).toUpperCase();
     const room = this.roomRepo.create({
       id: roomId,
@@ -83,14 +78,17 @@ export class GameService {
   }
 
   async getRoom(roomId: string): Promise<RoomEntity | null> {
-    return this.roomRepo.findOne({ where: { id: roomId } });
+    return this.roomRepo.findOne({
+      where: { id: roomId },
+      order: { players: { createdAt: "ASC" } },
+    });
   }
 
   async joinRoom(
     roomId: string,
     player: Omit<Player, "money" | "riskCards" | "mitigationCards">,
   ): Promise<{ room: RoomEntity; player: PlayerEntity }> {
-    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    const room = await this.getRoom(roomId);
     if (!room) throw new Error("Sala não encontrada");
     const existing = await this.playerRepo.findOne({
       where: { room: { id: roomId }, nickname: player.nickname },
@@ -117,9 +115,7 @@ export class GameService {
       await this.playerRepo.save(dbPlayer);
     }
 
-    const updatedRoom = (await this.roomRepo.findOne({
-      where: { id: roomId },
-    })) as RoomEntity;
+    const updatedRoom = (await this.getRoom(roomId)) as RoomEntity;
     return { room: updatedRoom, player: dbPlayer };
   }
 
@@ -134,7 +130,7 @@ export class GameService {
     }
 
     await this.playerRepo.delete({ id: playerId });
-    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    const room = await this.getRoom(roomId);
 
     if (room) {
       if (room.players.length === 0) {
@@ -147,7 +143,7 @@ export class GameService {
   }
 
   async endGame(roomId: string, hostId: string): Promise<RoomEntity> {
-    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    const room = await this.getRoom(roomId);
     if (!room) throw new Error("Sala não encontrada");
 
     const host = room.players.find((p) => p.id === hostId);
@@ -157,13 +153,11 @@ export class GameService {
 
     room.status = "finished";
     await this.roomRepo.save(room);
-    return (await this.roomRepo.findOne({
-      where: { id: roomId },
-    })) as RoomEntity;
+    return (await this.getRoom(roomId)) as RoomEntity;
   }
 
   async startGame(roomId: string): Promise<RoomEntity> {
-    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    const room = await this.getRoom(roomId);
     if (!room) throw new Error("Sala não encontrada");
     if (room.players.length < 2) throw new Error("Mínimo 2 jogadores");
 
@@ -179,9 +173,7 @@ export class GameService {
     }
 
     await this.roomRepo.save(room);
-    return (await this.roomRepo.findOne({
-      where: { id: roomId },
-    })) as RoomEntity;
+    return (await this.getRoom(roomId)) as RoomEntity;
   }
 
   async attack(
@@ -190,10 +182,20 @@ export class GameService {
     targetId: string,
     riskCardId: string,
   ): Promise<RoomEntity> {
-    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    const room = await this.getRoom(roomId);
     if (!room) throw new Error("Sala não encontrada");
     if (room.status !== "playing")
       throw new Error("Jogo não está em andamento");
+    if (room.currentAttack) throw new Error("Já existe um ataque em andamento");
+
+    const currentPlayer = room.players[room.currentPlayerIndex];
+    if (!currentPlayer || currentPlayer.id !== attackerId) {
+      throw new Error("Não é o seu turno para atacar");
+    }
+
+    if (attackerId === targetId) {
+      throw new Error("Você não pode atacar a si mesmo");
+    }
 
     const attacker = room.players.find((p) => p.id === attackerId);
     const riskCardIndex = attacker?.riskCards.findIndex(
@@ -214,9 +216,7 @@ export class GameService {
     };
 
     await this.roomRepo.save(room);
-    return (await this.roomRepo.findOne({
-      where: { id: roomId },
-    })) as RoomEntity;
+    return (await this.getRoom(roomId)) as RoomEntity;
   }
 
   async defend(
@@ -225,7 +225,7 @@ export class GameService {
     success: boolean,
     mitigationCardId?: string,
   ): Promise<RoomEntity> {
-    const room = await this.roomRepo.findOne({ where: { id: roomId } });
+    const room = await this.getRoom(roomId);
     if (
       !room ||
       !room.currentAttack ||
@@ -241,19 +241,11 @@ export class GameService {
 
     if (!target || !attacker) throw new Error("Jogadores inválidos");
 
-    let actualSuccess = false;
-    if (mitigationCardId) {
-      const mcIndex = target.mitigationCards.findIndex(
-        (c: MitigationCard) => c.id === mitigationCardId,
-      );
-      if (mcIndex !== -1) {
-        const mc = target.mitigationCards[mcIndex];
-        if (mc.categoryId === room.currentAttack.riskCard.categoryId) {
-          target.mitigationCards.splice(mcIndex, 1);
-          actualSuccess = true;
-        }
-      }
-    }
+    const actualSuccess = this.resolveMitigationCard(
+      target,
+      mitigationCardId,
+      room.currentAttack.riskCard.categoryId,
+    );
 
     if (actualSuccess) {
       attacker.money -= 5;
@@ -263,6 +255,37 @@ export class GameService {
       attacker.money += 5;
     }
 
+    this.progressTurn(room);
+
+    await this.playerRepo.save([
+      target,
+      attacker,
+      ...room.players.filter((p) => p.id !== target.id && p.id !== attacker.id),
+    ]);
+    await this.roomRepo.save(room);
+    return (await this.getRoom(roomId)) as RoomEntity;
+  }
+
+  private resolveMitigationCard(
+    target: PlayerEntity,
+    mitigationCardId?: string,
+    attackCategoryId?: string,
+  ): boolean {
+    if (!mitigationCardId) return false;
+    const mcIndex = target.mitigationCards.findIndex(
+      (c: MitigationCard) => c.id === mitigationCardId,
+    );
+    if (
+      mcIndex !== -1 &&
+      target.mitigationCards[mcIndex].categoryId === attackCategoryId
+    ) {
+      target.mitigationCards.splice(mcIndex, 1);
+      return true;
+    }
+    return false;
+  }
+
+  private progressTurn(room: RoomEntity): void {
     room.currentAttack = null;
     room.currentPlayerIndex =
       (room.currentPlayerIndex + 1) % room.players.length;
@@ -277,19 +300,10 @@ export class GameService {
         }
       }
     }
-
-    await this.playerRepo.save([
-      target,
-      attacker,
-      ...room.players.filter((p) => p.id !== target.id && p.id !== attacker.id),
-    ]);
-    await this.roomRepo.save(room);
-    return (await this.roomRepo.findOne({
-      where: { id: roomId },
-    })) as RoomEntity;
   }
 
   private getRandomCards<T>(deck: T[], amount: number): T[] {
+    // eslint-disable-next-line sonarjs/pseudo-random
     const shuffled = [...deck].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, amount);
   }

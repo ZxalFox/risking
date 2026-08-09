@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.8.0
+
+### Added
+- Added backend attack validation rules in `game.service.ts`: enforced turn ownership, prevented attacks when a defense is already pending, and blocked self-targeting attacks.
+- Created dedicated `Lobby.tsx` component in frontend to modularize waiting room rendering and clean up `room/[id]/page.tsx`.
+- Added `createdAt` timestamp tracking and deterministic ordering (`ORDER BY createdAt ASC`) on player relations in TypeORM to guarantee stable turn rotation order across database updates.
+
+### Fixed
+- Fixed turn rotation bug where updating player records in PostgreSQL altered relation ordering, causing turns to repeat or skip players.
+- Fixed TypeScript compiler deprecation warnings and Jest environment type definitions (`@types/jest`) to prevent Nest CLI watch mode crashes (`TS5103`) and `xhr poll error` WebSocket connection failures.
+- Fixed responsive scaling of language dropdown selector in `LocaleSwitcher.tsx`.
+- Replaced hardcoded Portuguese text in `GameBoard.tsx` (`acceptPenalty` and `confirmAttack`) with localized translation strings.
+- Removed compiled `backend/dist` directory from Git tracking and updated `.gitignore`.
+
 ## 1.7.0
 
 ### Added

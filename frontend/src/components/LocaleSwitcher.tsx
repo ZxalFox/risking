@@ -36,7 +36,7 @@ export default function LocaleSwitcher() {
       </span>
       <span className="relative inline-flex items-center">
         <select
-          className="cursor-pointer rounded-lg border border-neutral-700/80 bg-neutral-900 px-3 py-2 text-sm font-medium text-neutral-100 shadow-lg shadow-black/20 transition hover:border-orange-500/60 hover:bg-neutral-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/60 disabled:cursor-not-allowed disabled:opacity-70 sm:px-3 sm:py-1.5 sm:text-xs"
+          className="cursor-pointer rounded-lg border border-neutral-700/80 bg-neutral-900 px-2.5 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm font-medium text-neutral-100 shadow-lg shadow-black/20 transition hover:border-orange-500/60 hover:bg-neutral-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/60 disabled:cursor-not-allowed disabled:opacity-70"
           value={locale}
           onChange={handleChange}
           disabled={isPending}

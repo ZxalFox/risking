@@ -1,5 +1,5 @@
 [X] Retorna para a página inicial quando o idioma é trocado na tela de Lobby
-[ ] Responsividade do dropdown de idiomas
+[X] Responsividade do dropdown de idiomas
 [X] Cada jogador está podendo atacar duas vezes seguidas a ideia é atacar apenas uma vez por turno
 [X] As cartas de mitigação estão genéricas e sem descrição
 [X] Ao sobrar somente um jogador na partida o jogo não encerra automaticamente

@@ -1,5 +1,3 @@
-export type RiskCategory = string;
-
 export interface Mitigation {
   id: string;
   description: string;
@@ -7,14 +5,14 @@ export interface Mitigation {
 
 export interface RiskCard {
   id: string;
-  categoryId: RiskCategory;
+  categoryId: string;
   descriptionId: string;
   mitigations?: Mitigation[];
 }
 
 export interface MitigationCard {
   id: string;
-  categoryId: RiskCategory;
+  categoryId: string;
   mitigations?: Mitigation[];
 }
 
