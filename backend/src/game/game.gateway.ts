@@ -166,4 +166,46 @@ export class GameGateway implements OnGatewayDisconnect {
       client.emit("error", { data: e.message });
     }
   }
+
+  @SubscribeMessage("proposeMitigation")
+  async handleProposeMitigation(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: { roomId: string; description: string },
+  ) {
+    try {
+      const playerId = this.clientToPlayer.get(client.id) || client.id;
+      const room = await this.gameService.proposeMitigation(
+        data.roomId,
+        playerId,
+        data.description,
+      );
+      this.server.to(data.roomId).emit("mitigationProposed", room);
+      this.server.to(data.roomId).emit("roomUpdated", room);
+    } catch (error) {
+      const e = error as Error;
+      client.emit("error", { data: e.message });
+    }
+  }
+
+  @SubscribeMessage("evaluateMitigation")
+  async handleEvaluateMitigation(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    data: { roomId: string; approved: boolean },
+  ) {
+    try {
+      const playerId = this.clientToPlayer.get(client.id) || client.id;
+      const room = await this.gameService.evaluateMitigation(
+        data.roomId,
+        playerId,
+        data.approved,
+      );
+      this.server.to(data.roomId).emit("defenseResult", room);
+      this.server.to(data.roomId).emit("roomUpdated", room);
+    } catch (error) {
+      const e = error as Error;
+      client.emit("error", { data: e.message });
+    }
+  }
 }

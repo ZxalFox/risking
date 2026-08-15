@@ -38,6 +38,22 @@ Para executar as verificações de Clean Code e auditoria do SonarJS em ambos os
 yarn sonar
 ```
 
+### 5. Testes Automatizados
+
+Para rodar a suíte completa de testes automatizados (integração do fluxo de partida, regras de combate/defesa e gerenciamento de salas/sessões), execute:
+
+```bash
+yarn test
+```
+
+### 6. Verificação Estática de Tipagem (TypeScript)
+
+Para validar a integridade de tipos em todo o monorepo (frontend e backend):
+
+```bash
+yarn typecheck
+```
+
 ### Alternativa: Rodando a Aplicação Inteira via Docker
 
 Caso você queira rodar os containers completos (Frontend e Backend emulando o ambiente de produção), utilize:

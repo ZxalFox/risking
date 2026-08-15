@@ -37,5 +37,6 @@ export interface Room {
     targetId: string;
     riskCard: RiskCard;
     timeout?: number | NodeJS.Timeout;
+    proposedMitigation?: string;
   };
 }

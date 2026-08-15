@@ -30,6 +30,8 @@ export default function RoomPage({
     clearRoom,
     attack,
     defend,
+    proposeMitigation,
+    evaluateMitigation,
   } = useGame();
 
   const [selectedRisk, setSelectedRisk] = useState<string | null>(null);
@@ -58,6 +60,7 @@ export default function RoomPage({
     room.status === "playing" &&
     room.players[room.currentPlayerIndex]?.id === socketId;
   const amIAttacked = room.currentAttack?.targetId === socketId;
+  const isAttacker = room.currentAttack?.attackerId === socketId;
 
   const handleAttack = () => {
     if (selectedRisk && selectedTarget) {
@@ -74,6 +77,14 @@ export default function RoomPage({
 
   const handleFailDefend = () => {
     defend(room.id, false);
+  };
+
+  const handleProposeMitigation = (description: string) => {
+    proposeMitigation(room.id, description);
+  };
+
+  const handleEvaluateMitigation = (approved: boolean) => {
+    evaluateMitigation(room.id, approved);
   };
 
   return (
@@ -176,10 +187,13 @@ export default function RoomPage({
               room={room}
               isMyTurn={isMyTurn}
               amIAttacked={amIAttacked}
+              isAttacker={isAttacker}
               selectedRisk={selectedRisk}
               selectedTarget={selectedTarget}
               handleAttack={handleAttack}
               handleFailDefend={handleFailDefend}
+              handleProposeMitigation={handleProposeMitigation}
+              handleEvaluateMitigation={handleEvaluateMitigation}
             />
 
             {/* My Hand */}

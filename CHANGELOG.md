@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.9.0
+
+### Added
+- Implemented Dynamic Mitigation Defense Mechanism (Feature 1): allowed attacked defenders to describe their mitigation via text input, with real-time evaluation ("Aceitar" / "Negar") by the attacker over WebSockets.
+- Implemented Risk Cards Valid Mitigations Tooltip (Feature 2): added responsive hover overlay displaying the exact list of valid mitigations for all 26 risk cards based on Table 1 of `AGENTS.md`.
+- Added automated integration/E2E test suites with Jest in `backend/src/game/game.service.spec.ts` and `backend/src/game/game.gateway.spec.ts` covering the complete game core loop (creation, joining, starting, attack, card defense, textual defense acceptance/rejection, penalty direct acceptance, and room/host lifecycle management).
+- Added `yarn test` script to root `package.json` for running the automated test suite.
+
+### Changed
+- Enhanced visual distinction between Risk and Mitigation cards (`Card.tsx`): applied primary brand theme (orange warm gradient, `border-orange-500`, warning icons, and header badge) to Risk cards and secondary brand theme (emerald cool gradient, `border-emerald-400`, shield icons, and header badge) to Mitigation cards, with WCAG AAA high contrast ratio compliance.
+- Refactored `backend/src/game/game.service.ts` applying Single Responsibility Principle (SRP): extracted deck constants (`game-cards.constants.ts`), deck drawing/dealing helpers (`game-deck.helper.ts`), and game domain/rules/turn helpers (`game-rules.helper.ts`).
+- Componentized `frontend/src/components/game/GameBoard.tsx` into modular subcomponents (`AttackBanner`, `DefenderActionPanel`, `AttackerActionPanel`, `SpectatorActionPanel`, `TurnActionPanel`) and isolated form state management into custom hook `useMitigationForm.ts`.
+- Improved accessibility (a11y): integrated semantic HTML tags (`<main>`, `<section role="region">`, `<header>`, `<form>`, `<ol>`, `<blockquote>`), live status announcements (`aria-live="polite"`), explicit `aria-label`s on action buttons, and keyboard focus states.
+
 ## 1.8.0
 
 ### Added

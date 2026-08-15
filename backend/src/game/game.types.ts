@@ -37,5 +37,6 @@ export interface Room {
     targetId: string;
     riskCard: RiskCard;
     timeout?: NodeJS.Timeout; // To track the 1 minute limit maybe
+    proposedMitigation?: string;
   };
 }

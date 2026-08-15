@@ -19,6 +19,8 @@ interface GameContextProps {
   clearRoom: () => void;
   attack: (roomId: string, targetId: string, riskCardId: string) => void;
   defend: (roomId: string, success: boolean, mitigationCardId?: string) => void;
+  proposeMitigation: (roomId: string, description: string) => void;
+  evaluateMitigation: (roomId: string, approved: boolean) => void;
 }
 
 const GameContext = createContext<GameContextProps | undefined>(undefined);
@@ -105,6 +107,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     socket.on("roomUpdated", handleRoomData);
     socket.on("gameStarted", handleRoomData);
     socket.on("attacked", handleRoomData);
+    socket.on("mitigationProposed", handleRoomData);
     socket.on("defenseResult", handleRoomData);
     socket.on("error", (err) => setError(err.data || err));
 
@@ -117,6 +120,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       socket?.off("roomUpdated");
       socket?.off("gameStarted");
       socket?.off("attacked");
+      socket?.off("mitigationProposed");
       socket?.off("defenseResult");
       socket?.off("error");
     };
@@ -162,6 +166,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
     socket?.emit("defend", { roomId, success, mitigationCardId });
   }, []);
 
+  const proposeMitigation = useCallback((roomId: string, description: string) => {
+    socket?.emit("proposeMitigation", { roomId, description });
+  }, []);
+
+  const evaluateMitigation = useCallback((roomId: string, approved: boolean) => {
+    socket?.emit("evaluateMitigation", { roomId, approved });
+  }, []);
+
   return (
     <GameContext.Provider
       value={{
@@ -177,6 +189,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         clearRoom,
         attack,
         defend,
+        proposeMitigation,
+        evaluateMitigation,
       }}
     >
       {children}
