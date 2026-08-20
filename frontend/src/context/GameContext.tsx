@@ -25,6 +25,16 @@ interface GameContextProps {
 
 const GameContext = createContext<GameContextProps | undefined>(undefined);
 
+function getDefaultBackendUrl(): string {
+  if (typeof window === "undefined") {
+    return "http://localhost:3001";
+  }
+  if (window.location.port === "3000") {
+    return `http://${window.location.hostname}:3001`;
+  }
+  return window.location.origin;
+}
+
 export function GameProvider({ children }: { children: ReactNode }) {
   const [isConnected, setIsConnected] = useState(false);
   const [room, setRoom] = useState<Room | null>(null);
@@ -33,8 +43,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!socket) {
-      const defaultUrl = typeof window !== "undefined" ? `http://${window.location.hostname}:3001` : "http://localhost:3001";
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || defaultUrl;
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || getDefaultBackendUrl();
       socket = io(backendUrl);
     }
 

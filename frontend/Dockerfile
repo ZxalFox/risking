@@ -17,6 +17,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/frontend/node_modules ./frontend/node_modules
 COPY . .
 WORKDIR /app/frontend
+ARG NEXT_PUBLIC_BACKEND_URL
+ENV NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN yarn build
 
