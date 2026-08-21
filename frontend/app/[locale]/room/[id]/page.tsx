@@ -91,9 +91,14 @@ export default function RoomPage({
     <div className="min-h-screen bg-neutral-900 text-white p-6 font-body">
       <header className="flex flex-col md:flex-row justify-between items-center bg-neutral-800 p-4 rounded-xl mb-4 md:mb-6 shadow-md gap-4 md:gap-0">
         <div className="flex flex-col items-center md:items-start">
-          <h1 className="text-2xl font-heading font-bold text-orange-400">
-            Risking!
-          </h1>
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <span className="text-2xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-500">
+              Risking
+            </span>
+            <span className="text-xs font-mono font-bold text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-1.5 py-0.5 rounded shadow-sm">
+              .online
+            </span>
+          </div>
           <p className="text-sm text-neutral-400 flex items-center gap-2">
             {t("roomId")}:{" "}
             <span className="font-mono text-white">{room.id}</span>

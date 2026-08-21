@@ -1,10 +1,10 @@
 {
   "Metadata": {
-    "title": "Risking - Project Status",
-    "description": "Track the progress of the Risking digital adaptation and see what's coming next."
+    "title": "Risking.online - Software Risk Management Game",
+    "description": "Play Risking.online! A real-time multiplayer card game focused on software project risk management and strategic mitigations."
   },
   "HomePage": {
-    "heading": "Risking!",
+    "heading": "Risking.online",
     "subheading": "Survive the risks. Strategize. Win.",
     "nicknamePlaceholder": "Your Nickname",
     "roomIdPlaceholder": "Room Code (e.g., f83a2)",

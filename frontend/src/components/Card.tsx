@@ -184,7 +184,7 @@ export function Card({ type, categoryId, descriptionId, onClick, selected }: Car
           </div>
           <div className="pt-2 border-t border-neutral-800 text-[10px] text-neutral-400 flex items-center justify-between shrink-0">
             <span>{tCat(safeCategoryId)}</span>
-            <span className="text-emerald-400 font-semibold">Risking!</span>
+            <span className="text-emerald-400 font-semibold">Risking.online</span>
           </div>
         </div>
       )}

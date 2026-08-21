@@ -50,11 +50,16 @@ export default function HomePage({ params }: { params: PageParams }) {
   return (
     <main className="min-h-screen bg-neutral-900 flex items-center justify-center p-6 font-body text-white">
       <div className="max-w-md w-full bg-neutral-800 rounded-2xl shadow-2xl p-8 border border-neutral-700">
-        <header className="text-center mb-10">
-          <h1 className="text-6xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-red-600 drop-shadow-lg mb-2 pb-2">
-            {t("heading")}
-          </h1>
-          <p className="text-neutral-400">{t("subheading")}</p>
+        <header className="text-center mb-8">
+          <div className="inline-flex items-center justify-center flex-wrap gap-1.5 mb-3">
+            <h1 className="text-5xl sm:text-6xl font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 drop-shadow-lg tracking-tight">
+              Risking
+            </h1>
+            <span className="text-lg sm:text-2xl font-mono font-bold text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded-lg shadow-inner tracking-tight self-center">
+              .online
+            </span>
+          </div>
+          <p className="text-neutral-400 text-sm sm:text-base">{t("subheading")}</p>
         </header>
 
         <div className="space-y-6">

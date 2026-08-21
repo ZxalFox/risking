@@ -1,10 +1,10 @@
 {
   "Metadata": {
-    "title": "Risking - Status do Projeto",
-    "description": "Acompanhe o progresso da adaptação digital do Risking e saiba quais são os próximos passos."
+    "title": "Risking.online - O Jogo de Gestão de Riscos",
+    "description": "Jogue Risking.online! Um jogo de cartas multijogador em tempo real sobre gerenciamento de riscos e mitigações em projetos de software."
   },
   "HomePage": {
-    "heading": "Risking!",
+    "heading": "Risking.online",
     "subheading": "Sobreviva aos riscos. Crie estratégias. Vença.",
     "nicknamePlaceholder": "Seu Nickname",
     "roomIdPlaceholder": "Código da Sala (Ex: f83a2)",

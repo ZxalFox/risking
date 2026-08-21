@@ -54,13 +54,19 @@ Para validar a integridade de tipos em todo o monorepo (frontend e backend):
 yarn typecheck
 ```
 
-### Alternativa: Rodando a Aplicação Inteira via Docker
+### Alternativa: Rodando a Aplicação Inteira via Docker Localmente
 
 Caso você queira rodar os containers completos (Frontend e Backend emulando o ambiente de produção), utilize:
 
 ```bash
 ./scripts/risk-start.sh
 ```
+
+## 🌐 Deploy em Produção (AWS + HTTPS + Domínio)
+
+O guia detalhado com passo a passo para configuração de infraestrutura na **AWS (EC2 + Elastic IP)**, apontamento de DNS na **Hostinger**, emissão de certificados **SSL (Let's Encrypt / Certbot)** e proxy reverso com **Nginx** está disponível em:
+
+👉 [Guia de Deploy em Produção](docs/DEPLOYMENT.md)
 
 ## Documentação
 
